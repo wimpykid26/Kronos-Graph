@@ -13,11 +13,18 @@ sap.ui.define([
 	'sap/ui/layout/VerticalLayout',
 	'sap/m/NotificationListItem',
 	'sap/m/MessagePopoverItem',
+	'sap/m/InputListItem',
+	'sap/m/Select',
 	'sap/ui/core/CustomData',
 	'sap/m/MessageToast',
 	'sap/ui/Device',
+	'sap/ui/core/Item',
 	'sap/ui/core/syncStyleClass',
-	'sap/m/library'
+	'sap/m/library',
+	'sap/m/Label',
+	'sap/ui/model/Filter',
+	'sap/m/Token',
+	'sap/ui/model/FilterOperator'
 ], function (
 	BaseController,
 	Fragment,
@@ -33,11 +40,18 @@ sap.ui.define([
 	VerticalLayout,
 	NotificationListItem,
 	MessagePopoverItem,
+	InputListItem,
+	Select,
 	CustomData,
 	MessageToast,
 	Device,
+	Item,
 	syncStyleClass,
-	mobileLibrary
+	mobileLibrary,
+	Label,
+	Filter,
+	Token,
+	FilterOperator
 ) {
 		"use strict";
 
@@ -105,22 +119,22 @@ sap.ui.define([
 						MessageToast.show("Show all Notifications was pressed");
 					}
 				});
+				if (!this._oDialogList) {
+					this._oDialogList = sap.ui.xmlfragment("kronos.ui.graphapp.view.Dialog");
+				}
 				var oNavigationPopover = new ResponsivePopover(this.getView().createId("navigationPopover"), {
 					title: oBundle.getText(popoverTitle[key]),
-					contentWidth: "300px",
 					endButton: oButton,
+					contentWidth: "400px",
 					placement: PlacementType.Horizontal,
-					content: {
-						path: 'alerts>/alerts/notifications',
-						factory: this._createNotification
-					},
+					content: this._oDialogList,
 					afterClose: function () {
 						oNavigationPopover.destroy();
 					}
 				});
 				this.byId("app").addDependent(oNavigationPopover);
 				// forward compact/cozy style into dialog
-				// syncStyleClass(this.getView().getController().getOwnerComponent().getContentDensityClass(), this.getView(), oNavigationPopover);
+				syncStyleClass(this.getView().getController().getOwnerComponent().getContentDensityClass(), this.getView(), oNavigationPopover);
 				oNavigationPopover.openBy(oEvent.getSource());
 			},
 
@@ -254,7 +268,6 @@ sap.ui.define([
 			 * @private
 			 */
 			_createNotification: function (sId, oBindingContext) {
-				debugger;
 				var oBindingObject = oBindingContext.getObject();
 				var oNotificationItem = new NotificationListItem({
 					title: oBindingObject.title,
