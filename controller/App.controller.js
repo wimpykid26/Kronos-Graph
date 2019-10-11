@@ -9,6 +9,7 @@ sap.ui.define([
 	'sap/m/Button',
 	'sap/m/Link',
 	'sap/m/Bar',
+	'sap/ui/core/IconPool',
 	'sap/ui/layout/VerticalLayout',
 	'sap/m/NotificationListItem',
 	'sap/m/MessagePopoverItem',
@@ -28,6 +29,7 @@ sap.ui.define([
 	Button,
 	Link,
 	Bar,
+	IconPool,
 	VerticalLayout,
 	NotificationListItem,
 	MessagePopoverItem,
@@ -54,7 +56,6 @@ sap.ui.define([
 
 			onInit: function () {
 				this.getView().addStyleClass(this.getOwnerComponent().getContentDensityClass());
-
 				// if the app starts on desktop devices with small or meduim screen size, collaps the sid navigation
 				if (Device.resize.width <= 1024) {
 					this.onSideNavButtonPress();
