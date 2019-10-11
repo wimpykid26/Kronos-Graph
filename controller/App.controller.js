@@ -87,8 +87,41 @@ sap.ui.define([
 					}
 					this.getRouter().navTo(sKey);
 				} else {
+					this._openNavPopover(sKey, oEvent);
 					MessageToast.show(sKey);
 				}
+			},
+
+			_openNavPopover(key, oEvent) {
+				const popoverTitle = {
+					"filters": "filterTitle",
+					"legends": "legendTitle",
+					"shortestDistance": "shortestDistanceTitle"
+				};
+				var oBundle = this.getModel("i18n").getResourceBundle();
+				var oButton = new Button({
+					text: oBundle.getText("navigationButtonText"),
+					press: function () {
+						MessageToast.show("Show all Notifications was pressed");
+					}
+				});
+				var oNavigationPopover = new ResponsivePopover(this.getView().createId("navigationPopover"), {
+					title: oBundle.getText(popoverTitle[key]),
+					contentWidth: "300px",
+					endButton: oButton,
+					placement: PlacementType.Horizontal,
+					content: {
+						path: 'alerts>/alerts/notifications',
+						factory: this._createNotification
+					},
+					afterClose: function () {
+						oNavigationPopover.destroy();
+					}
+				});
+				this.byId("app").addDependent(oNavigationPopover);
+				// forward compact/cozy style into dialog
+				// syncStyleClass(this.getView().getController().getOwnerComponent().getContentDensityClass(), this.getView(), oNavigationPopover);
+				oNavigationPopover.openBy(oEvent.getSource());
 			},
 
 			onUserNamePress: function (oEvent) {
@@ -221,6 +254,7 @@ sap.ui.define([
 			 * @private
 			 */
 			_createNotification: function (sId, oBindingContext) {
+				debugger;
 				var oBindingObject = oBindingContext.getObject();
 				var oNotificationItem = new NotificationListItem({
 					title: oBindingObject.title,
