@@ -122,15 +122,12 @@ sap.ui.define([
 				if (!this._oDialogList) {
 					this._oDialogList = sap.ui.xmlfragment("kronos.ui.graphapp.view.Dialog");
 				}
-				var oNavigationPopover = new ResponsivePopover(this.getView().createId("navigationPopover"), {
+				var oNavigationPopover = new ResponsivePopover({
 					title: oBundle.getText(popoverTitle[key]),
 					endButton: oButton,
 					contentWidth: "400px",
 					placement: PlacementType.Horizontal,
 					content: this._oDialogList,
-					afterClose: function () {
-						oNavigationPopover.destroy();
-					}
 				});
 				this.byId("app").addDependent(oNavigationPopover);
 				// forward compact/cozy style into dialog
