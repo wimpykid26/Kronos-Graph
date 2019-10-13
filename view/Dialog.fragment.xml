@@ -1,20 +1,23 @@
 <core:FragmentDefinition xmlns:l="sap.ui.layout" 
     xmlns:core="sap.ui.core" 
     xmlns:mvc="sap.ui.core.mvc" 
-    xmlns="sap.m">
+    xmlns="sap.m" controllerName="kronos.ui.graphapp.controller.App">
     <List class="sapUiContentPadding">
-        <InputListItem label="WLAN" class="sapUiTinyMargin myCustomText">
-            <MultiInput width="200px" id="multiInput" class="sapUiTinyMargin sapUiContentPadding">
+        <InputListItem label="Edge Type" class="sapUiTinyMargin myCustomText">
+            <MultiInput width="200px" id="multiInput" class="sapUiTinyMargin sapUiContentPadding" suggestionItems="{
+				path: '/ProductCollection',
+				sorter: { path: 'Name' }
+			}" valueHelpRequest="handleValueHelp">
                 <core:Item key="{ProductId}" text="{Name}" />
             </MultiInput>
         </InputListItem>
-        <InputListItem label="Flight Mode" class="sapUiTinyMargin myCustomText">
+        <InputListItem label="Souce Node Type" class="sapUiTinyMargin myCustomText">
             <CheckBox selected="true" />
         </InputListItem>
-        <InputListItem label="High Performance" class="sapUiTinyMargin myCustomText">
+        <InputListItem label="Destination Node Type" class="sapUiTinyMargin myCustomText">
             <RadioButton groupName="GroupInputListItem" selected="true" />
         </InputListItem>
-        <InputListItem label="Battery Saving" class="sapUiTinyMargin myCustomText">
+        <InputListItem label="Relationship Type" class="sapUiTinyMargin myCustomText">
             <RadioButton groupName="GroupInputListItem" />
         </InputListItem>
     </List>

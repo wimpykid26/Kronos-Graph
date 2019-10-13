@@ -68,6 +68,10 @@
 			"customer": {
 				"type": "sap.ui.model.json.JSONModel",
 				"uri": "model/customers.json"
+			},
+			"products": {
+				"type": "sap.ui.model.json.JSONModel",
+				"uri": "model/products.json"
 			}
 		},
 		"routing": {
