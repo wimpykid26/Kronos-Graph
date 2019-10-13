@@ -9,14 +9,22 @@ sap.ui.define([
 	'sap/m/Button',
 	'sap/m/Link',
 	'sap/m/Bar',
+	'sap/ui/core/IconPool',
 	'sap/ui/layout/VerticalLayout',
 	'sap/m/NotificationListItem',
 	'sap/m/MessagePopoverItem',
+	'sap/m/InputListItem',
+	'sap/m/Select',
 	'sap/ui/core/CustomData',
 	'sap/m/MessageToast',
 	'sap/ui/Device',
+	'sap/ui/core/Item',
 	'sap/ui/core/syncStyleClass',
-	'sap/m/library'
+	'sap/m/library',
+	'sap/m/Label',
+	'sap/ui/model/Filter',
+	'sap/m/Token',
+	'sap/ui/model/FilterOperator'
 ], function (
 	BaseController,
 	Fragment,
@@ -28,14 +36,22 @@ sap.ui.define([
 	Button,
 	Link,
 	Bar,
+	IconPool,
 	VerticalLayout,
 	NotificationListItem,
 	MessagePopoverItem,
+	InputListItem,
+	Select,
 	CustomData,
 	MessageToast,
 	Device,
+	Item,
 	syncStyleClass,
-	mobileLibrary
+	mobileLibrary,
+	Label,
+	Filter,
+	Token,
+	FilterOperator
 ) {
 		"use strict";
 
@@ -53,8 +69,12 @@ sap.ui.define([
 			_bExpanded: true,
 
 			onInit: function () {
+				// set explored app's demo model on this sample
+				var dataModel = this.getOwnerComponent().getModel("products");
+				// the default limit of the model is set to 100. We want to show all the entries.
+				dataModel.setSizeLimit(1000000);
+				this.getView().setModel(dataModel);
 				this.getView().addStyleClass(this.getOwnerComponent().getContentDensityClass());
-
 				// if the app starts on desktop devices with small or meduim screen size, collaps the sid navigation
 				if (Device.resize.width <= 1024) {
 					this.onSideNavButtonPress();
@@ -86,8 +106,90 @@ sap.ui.define([
 					}
 					this.getRouter().navTo(sKey);
 				} else {
+					this._openNavPopover(sKey, oEvent);
 					MessageToast.show(sKey);
 				}
+			},
+
+			handleValueHelp: function (oEvent) {
+				var sInputValue = oEvent.getSource().getValue();
+				// create value help dialog
+				if (!this._valueHelpDialog) {
+					Fragment.load({
+						id: this.getView().getId(),
+						name: "kronos.ui.graphapp.view.InputDialog",
+						controller: this
+					}).then(function (oValueHelpDialog) {
+						this._valueHelpDialog = oValueHelpDialog;
+						this.getView().addDependent(this._valueHelpDialog);
+						this._openValueHelpDialog(sInputValue);
+					}.bind(this));
+				} else {
+					this._openValueHelpDialog(sInputValue);
+				}
+			},
+
+			_openValueHelpDialog: function (sInputValue) {
+				// create a filter for the binding
+				this._valueHelpDialog.getBinding("items").filter([new Filter(
+					"Name",
+					FilterOperator.Contains,
+					sInputValue
+				)]);
+
+				// open value help dialog filtered by the input value
+				this._valueHelpDialog.open(sInputValue);
+			},
+
+			_handleValueHelpSearch: function (evt) {
+				var sValue = evt.getParameter("value");
+				var oFilter = new Filter(
+					"Name",
+					FilterOperator.Contains,
+					sValue
+				);
+				evt.getSource().getBinding("items").filter([oFilter]);
+			},
+
+			_handleValueHelpClose: function (evt) {
+				var aSelectedItems = evt.getParameter("selectedItems"),
+					oMultiInput = this.byId("multiInput");
+				if (aSelectedItems && aSelectedItems.length > 0) {
+					aSelectedItems.forEach(function (oItem) {
+						oMultiInput.addToken(new Token({
+							text: oItem.getTitle()
+						}));
+					});
+				}
+			},
+
+			_openNavPopover(key, oEvent) {
+				const popoverTitle = {
+					"filters": "filterTitle",
+					"legends": "legendTitle",
+					"shortestDistance": "shortestDistanceTitle"
+				};
+				var oBundle = this.getModel("i18n").getResourceBundle();
+				var oButton = new Button({
+					text: oBundle.getText("navigationButtonText"),
+					press: function () {
+						MessageToast.show("Show all Notifications was pressed");
+					}
+				});
+				if (!this._oDialogList) {
+					this._oDialogList = sap.ui.xmlfragment(this.getView().getId(), "kronos.ui.graphapp.view.Dialog", this);
+				}
+				var oNavigationPopover = new ResponsivePopover({
+					title: oBundle.getText(popoverTitle[key]),
+					endButton: oButton,
+					contentWidth: "500px",
+					placement: PlacementType.Horizontal,
+					content: this._oDialogList,
+				});
+				this.byId("app").addDependent(oNavigationPopover);
+				// forward compact/cozy style into dialog
+				syncStyleClass(this.getView().getController().getOwnerComponent().getContentDensityClass(), this.getView(), oNavigationPopover);
+				oNavigationPopover.openBy(oEvent.getSource());
 			},
 
 			onUserNamePress: function (oEvent) {

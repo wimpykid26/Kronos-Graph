@@ -1,35 +1,41 @@
 {
 	"navigation": [
 		{
-			"title": "Home",
-			"icon": "sap-icon://home",
+			"title": "Graph",
+			"icon": "sap-icon://combine",
 			"expanded": true,
-			"key": "home",
+			"key": "graph",
 			"items": []
 		},
 		{
-			"title": "Settings",
-			"icon": "sap-icon://settings",
+			"title": "Filters",
+			"icon": "sap-icon://filter",
 			"expanded": false,
-			"key": "masterSettings"
-		,
+			"key": "filters",
 			"items": []
 		},
 		{
-			"title": "Statistics",
-			"icon": "sap-icon://line-chart",
+			"title": "Algorithms",
+			"icon": "sap-icon://simulate",
 			"expanded": true,
-			"key": "statistics",
+			"key": "algorithms",
 			"items": [
 				{
-					"title": "Usage Statistics",
-					"key": "Usage Statistics was pressed"
+					"title": "Shortest Distance",
+					"key": "shortestDistance"
 				},
 				{
-					"title": "Order Statistics",
-					"key": "Order Statistics was pressed"
+					"title": "To be Added",
+					"key": "To be Added was pressed"
 				}
 			]
+		},
+		{
+			"title": "Legends",
+			"icon": "sap-icon://legend",
+			"expanded": true,
+			"key": "legends",
+			"items": []
 		}
 	],
 	"fixedNavigation": [
@@ -42,33 +48,6 @@
 			"title": "Legal",
 			"icon": "sap-icon://compare",
 			"key": "Legal was pressed"
-		}
-	],
-	"masterSettings": [
-		{
-			"title": "System Settings",
-			"key": "systemSettings",
-			"selected": true
-		},
-		{
-			"title": "Order Settings",
-			"key": "orderSettings",
-			"selected": false
-		},
-		{
-			"title": "Supplier Settings",
-			"key": "supplierSettings",
-			"selected": false
-		},
-		{
-			"title": "Campaign Settings",
-			"key": "campaignSettings",
-			"selected": false
-		},
-		{
-			"title": "Shipping Settings",
-			"key": "shipping Settings",
-			"selected": false
 		}
 	]
 }
