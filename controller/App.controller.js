@@ -182,6 +182,7 @@ sap.ui.define([
 				var oNavigationPopover = new ResponsivePopover({
 					title: oBundle.getText(popoverTitle[key]),
 					endButton: oButton,
+					modal: true,
 					contentWidth: "500px",
 					placement: PlacementType.Horizontal,
 					content: this._oDialogList,
