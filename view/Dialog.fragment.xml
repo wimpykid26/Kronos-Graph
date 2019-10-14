@@ -11,7 +11,7 @@
                 <core:Item key="{ProductId}" text="{Name}" />
             </MultiInput>
         </InputListItem>
-        <InputListItem label="Souce Node Type" class="sapUiTinyMargin myCustomText">
+        <InputListItem label="Source Node Type" class="sapUiTinyMargin myCustomText">
             <MultiInput width="200px" id="multiInputVertex" class="sapUiTinyMargin sapUiContentPadding" suggestionItems="{
 				path: '/VertexType',
 				sorter: { path: 'Name' }
@@ -20,9 +20,14 @@
             </MultiInput>
         </InputListItem>
         <InputListItem label="Destination Node Type" class="sapUiTinyMargin myCustomText">
-            <RadioButton groupName="GroupInputListItem" selected="true" />
+            <MultiInput width="200px" id="multiInputVertex2" class="sapUiTinyMargin sapUiContentPadding" suggestionItems="{
+				path: '/VertexType',
+				sorter: { path: 'Name' }
+			}" valueHelpRequest="handleValueHelp">
+                <core:Item key="{ProductId}" text="{Name}" />
+            </MultiInput>
         </InputListItem>
-        <InputListItem label="Relationship Type" class="sapUiTinyMargin myCustomText">
+        <InputListItem label="Node" class="sapUiTinyMargin myCustomText">
             <RadioButton groupName="GroupInputListItem" />
         </InputListItem>
     </List>

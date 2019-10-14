@@ -114,11 +114,22 @@ sap.ui.define([
 			handleValueHelp: function (oEvent) {
 				var sInputValue = oEvent.getSource().getValue();
 				// create value help dialog
+				var title = ''
 				debugger;
 				if (!this._valueHelpDialog || this._valueHelpDialog.bIsDestroyed) {
 					switch (oEvent.getSource().getId()) {
-						case 'container-graphapp---app--multiInput': name = "kronos.ui.graphapp.view.InputDialog"; break;
-						case 'container-graphapp---app--multiInputVertex': name = "kronos.ui.graphapp.view.VertexSearchHelp"; break;
+						case 'container-graphapp---app--multiInput':
+							name = "kronos.ui.graphapp.view.InputDialog";
+							title = 'Edge Type';
+							break;
+						case 'container-graphapp---app--multiInputVertex':
+							name = "kronos.ui.graphapp.view.VertexSearchHelp";
+							title = 'Source Node Type';
+							break;
+						case 'container-graphapp---app--multiInputVertex2':
+							name = "kronos.ui.graphapp.view.VertexSearchHelp";
+							title = 'Target Node Type';
+							break;
 					}
 					Fragment.load({
 						id: this.getView().getId(),
@@ -126,6 +137,7 @@ sap.ui.define([
 						controller: this
 					}).then(function (oValueHelpDialog) {
 						this._valueHelpDialog = oValueHelpDialog;
+						this._valueHelpDialog.setTitle(title);
 						this.getView().addDependent(this._valueHelpDialog);
 						this._openValueHelpDialog(sInputValue);
 					}.bind(this));
@@ -161,7 +173,8 @@ sap.ui.define([
 				var oMultiInput = '';
 				switch (evt.getSource().getTitle()) {
 					case 'Edge Type': oMultiInput = this.byId("multiInput"); break;
-					case 'Node Type': oMultiInput = this.byId("multiInputVertex"); break;
+					case 'Source Node Type': oMultiInput = this.byId("multiInputVertex"); break;
+					case 'Target Node Type': oMultiInput = this.byId("multiInputVertex2"); break;
 				}
 				if (aSelectedItems && aSelectedItems.length > 0) {
 					aSelectedItems.forEach(function (oItem) {
