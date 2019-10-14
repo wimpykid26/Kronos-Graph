@@ -116,8 +116,7 @@ sap.ui.define([
 			handleValueHelp: function (oEvent) {
 				var sInputValue = oEvent.getSource().getValue();
 				// create value help dialog
-				var title = ''
-				debugger;
+				var title = '';
 				if (!this._valueHelpDialog || this._valueHelpDialog.bIsDestroyed) {
 					switch (oEvent.getSource().getId()) {
 						case 'container-graphapp---app--multiInput':
@@ -134,7 +133,15 @@ sap.ui.define([
 							break;
 						case 'container-graphapp---app--multiInputNode':
 							name = "kronos.ui.graphapp.view.fragment.NodeSearchHelp";
-							title = 'Node Type';
+							title = 'Node';
+							break;
+						case 'container-graphapp---app--multiInputSource':
+							name = "kronos.ui.graphapp.view.fragment.NodeSearchHelp";
+							title = 'Source Node';
+							break;
+						case 'container-graphapp---app--multiInputTarget':
+							name = "kronos.ui.graphapp.view.fragment.NodeSearchHelp";
+							title = 'Target Node';
 							break;
 					}
 					Fragment.load({
@@ -155,10 +162,10 @@ sap.ui.define([
 			_openValueHelpDialog: function (sInputValue) {
 				// create a filter for the binding
 				var filter = '';
-				if (this._valueHelpDialog.getTitle() == 'Node Type') {
+				if (this._valueHelpDialog.getTitle() == 'Node' || 'Source Node' || 'Target Node') {
 					filter = 'title';
 				} else {
-					filter = 'Name'
+					filter = 'Name';
 				}
 				this._valueHelpDialog.getBinding("items").filter([new Filter(
 					filter,
@@ -173,7 +180,7 @@ sap.ui.define([
 			_handleValueHelpSearch: function (evt) {
 				var sValue = evt.getParameter("value");
 				var filter = '';
-				if (this._valueHelpDialog.getTitle() == 'Node Type') {
+				if (this._valueHelpDialog.getTitle() == 'Node' || 'Source Node' || 'Target Node') {
 					filter = 'title';
 				} else {
 					filter = 'Name'
@@ -193,7 +200,9 @@ sap.ui.define([
 					case 'Edge Type': oMultiInput = this.byId("multiInput"); break;
 					case 'Source Node Type': oMultiInput = this.byId("multiInputVertex"); break;
 					case 'Target Node Type': oMultiInput = this.byId("multiInputVertex2"); break;
-					case 'Node Type': oMultiInput = this.byId("multiInputNode"); break;
+					case 'Node': oMultiInput = this.byId("multiInputNode"); break;
+					case 'Source Node': oMultiInput = this.byId("multiInputSource"); break;
+					case 'Target Node': oMultiInput = this.byId("multiInputTarget"); break;
 				}
 				if (aSelectedItems && aSelectedItems.length > 0) {
 					aSelectedItems.forEach(function (oItem) {
@@ -218,9 +227,17 @@ sap.ui.define([
 						MessageToast.show("Show all Notifications was pressed");
 					}
 				});
-				if (!this._oDialogList) {
-					this._oDialogList = sap.ui.xmlfragment(this.getView().getId(), "kronos.ui.graphapp.view.fragment.Dialog", this);
+				var oDialog = '';
+				switch (key) {
+					case 'filters':
+						oDialog = "kronos.ui.graphapp.view.fragment.Dialog";
+						break;
+					case 'shortestDistance':
+						oDialog = "kronos.ui.graphapp.view.fragment.ShortestDistance";
+						break;
 				}
+				this._oDialogList = sap.ui.xmlfragment(this.getView().getId(), oDialog, this);
+
 				var oNavigationPopover = new ResponsivePopover({
 					title: oBundle.getText(popoverTitle[key]),
 					endButton: oButton,
@@ -228,6 +245,9 @@ sap.ui.define([
 					contentWidth: "500px",
 					placement: PlacementType.Horizontal,
 					content: this._oDialogList,
+					afterClose: function () {
+						oNavigationPopover.destroy();
+					}
 				});
 				this.byId("app").addDependent(oNavigationPopover);
 				// forward compact/cozy style into dialog

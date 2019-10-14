@@ -29,10 +29,10 @@
         </InputListItem>
         <InputListItem label="Node" class="sapUiTinyMargin myCustomText">
             <MultiInput width="200px" id="multiInputNode" class="sapUiTinyMargin sapUiContentPadding" suggestionItems="{
-				path: '/nodes',
-				sorter: { path: 'title' }
+				path: 'graph>/nodes',
+				sorter: { path: 'graph>title' }
 			}" valueHelpRequest="handleValueHelp">
-                <core:Item key="{key}" text="{title}" />
+                <core:Item key="{graph>key}" text="{graph>title}" />
             </MultiInput>
         </InputListItem>
     </List>
