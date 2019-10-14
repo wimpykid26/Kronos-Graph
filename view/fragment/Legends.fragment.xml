@@ -1,0 +1,19 @@
+<core:FragmentDefinition xmlns:l="sap.ui.layout" 
+    xmlns:core="sap.ui.core" 
+    xmlns:mvc="sap.ui.core.mvc" 
+    xmlns="sap.m" controllerName="kronos.ui.graphapp.controller.App">
+    <List class="sapUiContentPadding">
+        <InputListItem label="Location" class="sapUiTinyMargin myCustomText">
+            <Input id="colorLocation" type="Text" width="200px" placeholder="Enter Color ..." showValueHelp="true" valueHelpRequest="openColorPicker" change="handleInputChange"/>
+        </InputListItem>
+        <InputListItem label="Organization" class="sapUiTinyMargin myCustomText">
+            <Input id="colorOrganization" type="Text" width="200px" placeholder="Enter Color ..." showValueHelp="true" valueHelpRequest="openColorPicker" change="handleInputChange"/>
+        </InputListItem>
+        <InputListItem label="Person" class="sapUiTinyMargin myCustomText">
+            <Input id="colorPerson" type="Text" width="200px" placeholder="Enter Color ..." showValueHelp="true" valueHelpRequest="openColorPicker" change="handleInputChange"/>
+        </InputListItem>
+        <InputListItem label="Time" class="sapUiTinyMargin myCustomText">
+            <Input id="colorTime" type="Text" width="200px" placeholder="Enter Color ..." showValueHelp="true" valueHelpRequest="openColorPicker" change="handleInputChange"/>
+        </InputListItem>
+    </List>
+</core:FragmentDefinition>

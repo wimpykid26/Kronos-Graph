@@ -1,0 +1,39 @@
+<core:FragmentDefinition xmlns:l="sap.ui.layout" 
+    xmlns:core="sap.ui.core" 
+    xmlns:mvc="sap.ui.core.mvc" 
+    xmlns="sap.m" controllerName="kronos.ui.graphapp.controller.App">
+    <List class="sapUiContentPadding">
+        <InputListItem label="Edge Type" class="sapUiTinyMargin myCustomText">
+            <MultiInput width="200px" id="multiInput" class="sapUiTinyMargin sapUiContentPadding" suggestionItems="{
+				path: '/EdgeCollection',
+				sorter: { path: 'Name' }
+			}" valueHelpRequest="handleValueHelp">
+                <core:Item key="{ProductId}" text="{Name}" />
+            </MultiInput>
+        </InputListItem>
+        <InputListItem label="Source Node Type" class="sapUiTinyMargin myCustomText">
+            <MultiInput width="200px" id="multiInputVertex" class="sapUiTinyMargin sapUiContentPadding" suggestionItems="{
+				path: '/VertexType',
+				sorter: { path: 'Name' }
+			}" valueHelpRequest="handleValueHelp">
+                <core:Item key="{ProductId}" text="{Name}" />
+            </MultiInput>
+        </InputListItem>
+        <InputListItem label="Destination Node Type" class="sapUiTinyMargin myCustomText">
+            <MultiInput width="200px" id="multiInputVertex2" class="sapUiTinyMargin sapUiContentPadding" suggestionItems="{
+				path: '/VertexType',
+				sorter: { path: 'Name' }
+			}" valueHelpRequest="handleValueHelp">
+                <core:Item key="{ProductId}" text="{Name}" />
+            </MultiInput>
+        </InputListItem>
+        <InputListItem label="Node" class="sapUiTinyMargin myCustomText">
+            <MultiInput width="200px" id="multiInputNode" class="sapUiTinyMargin sapUiContentPadding" suggestionItems="{
+				path: 'graph>/nodes',
+				sorter: { path: 'graph>title' }
+			}" valueHelpRequest="handleValueHelp">
+                <core:Item key="{graph>key}" text="{graph>title}" />
+            </MultiInput>
+        </InputListItem>
+    </List>
+</core:FragmentDefinition>

@@ -69,9 +69,13 @@
 				"type": "sap.ui.model.json.JSONModel",
 				"uri": "model/customers.json"
 			},
-			"products": {
+			"edges": {
 				"type": "sap.ui.model.json.JSONModel",
-				"uri": "model/products.json"
+				"uri": "model/dialog.json"
+			},
+			"graph": {
+				"type": "sap.ui.model.json.JSONModel",
+				"uri": "model/graph.json"
 			}
 		},
 		"routing": {

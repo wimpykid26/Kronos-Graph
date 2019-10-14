@@ -24,7 +24,8 @@ sap.ui.define([
 	'sap/m/Label',
 	'sap/ui/model/Filter',
 	'sap/m/Token',
-	'sap/ui/model/FilterOperator'
+	'sap/ui/model/FilterOperator',
+	'sap/ui/unified/ColorPickerPopover'
 ], function (
 	BaseController,
 	Fragment,
@@ -51,7 +52,8 @@ sap.ui.define([
 	Label,
 	Filter,
 	Token,
-	FilterOperator
+	FilterOperator,
+	ColorPickerPopover
 ) {
 		"use strict";
 
@@ -70,10 +72,12 @@ sap.ui.define([
 
 			onInit: function () {
 				// set explored app's demo model on this sample
-				var dataModel = this.getOwnerComponent().getModel("products");
+				var dataModel = this.getOwnerComponent().getModel("edges");
+				var graphModel = this.getOwnerComponent().getModel("graph");
 				// the default limit of the model is set to 100. We want to show all the entries.
 				dataModel.setSizeLimit(1000000);
 				this.getView().setModel(dataModel);
+				this.getView().setModel(graphModel, "graph");
 				this.getView().addStyleClass(this.getOwnerComponent().getContentDensityClass());
 				// if the app starts on desktop devices with small or meduim screen size, collaps the sid navigation
 				if (Device.resize.width <= 1024) {
@@ -114,13 +118,41 @@ sap.ui.define([
 			handleValueHelp: function (oEvent) {
 				var sInputValue = oEvent.getSource().getValue();
 				// create value help dialog
-				if (!this._valueHelpDialog) {
+				var title = '';
+				if (!this._valueHelpDialog || this._valueHelpDialog.bIsDestroyed) {
+					switch (oEvent.getSource().getId()) {
+						case 'container-graphapp---app--multiInput':
+							name = "kronos.ui.graphapp.view.fragment.InputDialog";
+							title = 'Edge Type';
+							break;
+						case 'container-graphapp---app--multiInputVertex':
+							name = "kronos.ui.graphapp.view.fragment.VertexSearchHelp";
+							title = 'Source Node Type';
+							break;
+						case 'container-graphapp---app--multiInputVertex2':
+							name = "kronos.ui.graphapp.view.fragment.VertexSearchHelp";
+							title = 'Target Node Type';
+							break;
+						case 'container-graphapp---app--multiInputNode':
+							name = "kronos.ui.graphapp.view.fragment.NodeSearchHelp";
+							title = 'Node';
+							break;
+						case 'container-graphapp---app--multiInputSource':
+							name = "kronos.ui.graphapp.view.fragment.NodeSearchHelp";
+							title = 'Source Node';
+							break;
+						case 'container-graphapp---app--multiInputTarget':
+							name = "kronos.ui.graphapp.view.fragment.NodeSearchHelp";
+							title = 'Target Node';
+							break;
+					}
 					Fragment.load({
 						id: this.getView().getId(),
-						name: "kronos.ui.graphapp.view.InputDialog",
+						name: name,
 						controller: this
 					}).then(function (oValueHelpDialog) {
 						this._valueHelpDialog = oValueHelpDialog;
+						this._valueHelpDialog.setTitle(title);
 						this.getView().addDependent(this._valueHelpDialog);
 						this._openValueHelpDialog(sInputValue);
 					}.bind(this));
@@ -131,8 +163,14 @@ sap.ui.define([
 
 			_openValueHelpDialog: function (sInputValue) {
 				// create a filter for the binding
+				var filter = '';
+				if (this._valueHelpDialog.getTitle() == 'Node' || 'Source Node' || 'Target Node') {
+					filter = 'title';
+				} else {
+					filter = 'Name';
+				}
 				this._valueHelpDialog.getBinding("items").filter([new Filter(
-					"Name",
+					filter,
 					FilterOperator.Contains,
 					sInputValue
 				)]);
@@ -143,8 +181,14 @@ sap.ui.define([
 
 			_handleValueHelpSearch: function (evt) {
 				var sValue = evt.getParameter("value");
+				var filter = '';
+				if (this._valueHelpDialog.getTitle() == 'Node' || 'Source Node' || 'Target Node') {
+					filter = 'title';
+				} else {
+					filter = 'Name'
+				}
 				var oFilter = new Filter(
-					"Name",
+					filter,
 					FilterOperator.Contains,
 					sValue
 				);
@@ -152,8 +196,16 @@ sap.ui.define([
 			},
 
 			_handleValueHelpClose: function (evt) {
-				var aSelectedItems = evt.getParameter("selectedItems"),
-					oMultiInput = this.byId("multiInput");
+				var aSelectedItems = evt.getParameter("selectedItems");
+				var oMultiInput = '';
+				switch (evt.getSource().getTitle()) {
+					case 'Edge Type': oMultiInput = this.byId("multiInput"); break;
+					case 'Source Node Type': oMultiInput = this.byId("multiInputVertex"); break;
+					case 'Target Node Type': oMultiInput = this.byId("multiInputVertex2"); break;
+					case 'Node': oMultiInput = this.byId("multiInputNode"); break;
+					case 'Source Node': oMultiInput = this.byId("multiInputSource"); break;
+					case 'Target Node': oMultiInput = this.byId("multiInputTarget"); break;
+				}
 				if (aSelectedItems && aSelectedItems.length > 0) {
 					aSelectedItems.forEach(function (oItem) {
 						oMultiInput.addToken(new Token({
@@ -161,6 +213,7 @@ sap.ui.define([
 						}));
 					});
 				}
+				this._valueHelpDialog.destroy();
 			},
 
 			_openNavPopover(key, oEvent) {
@@ -176,15 +229,30 @@ sap.ui.define([
 						MessageToast.show("Show all Notifications was pressed");
 					}
 				});
-				if (!this._oDialogList) {
-					this._oDialogList = sap.ui.xmlfragment(this.getView().getId(), "kronos.ui.graphapp.view.Dialog", this);
+				var oDialog = '';
+				switch (key) {
+					case 'filters':
+						oDialog = "kronos.ui.graphapp.view.fragment.Dialog";
+						break;
+					case 'shortestDistance':
+						oDialog = "kronos.ui.graphapp.view.fragment.ShortestDistance";
+						break;
+					case 'legends':
+						oDialog = "kronos.ui.graphapp.view.fragment.Legends";
+						break;
 				}
+				this._oDialogList = sap.ui.xmlfragment(this.getView().getId(), oDialog, this);
+
 				var oNavigationPopover = new ResponsivePopover({
 					title: oBundle.getText(popoverTitle[key]),
 					endButton: oButton,
+					modal: true,
 					contentWidth: "500px",
 					placement: PlacementType.Horizontal,
 					content: this._oDialogList,
+					afterClose: function () {
+						oNavigationPopover.destroy();
+					}
 				});
 				this.byId("app").addDependent(oNavigationPopover);
 				// forward compact/cozy style into dialog
@@ -256,7 +324,36 @@ sap.ui.define([
 					oToggleButton.setTooltip('Small Size Navigation');
 				}
 			},
+			openColorPicker: function (oEvent) {
+				this.inputId = oEvent.getSource().getId();
+				if (!this.oColorPickerSimplifiedPopover) {
+					this.oColorPickerSimplifiedPopover = new ColorPickerPopover("oColorPickerSimpplifiedPopover", {
+						colorString: "pink",
+						displayMode: sap.ui.unified.ColorPickerDisplayMode.Simplified,
+						mode: sap.ui.unified.ColorPickerMode.HSL,
+						change: this.handleChange.bind(this)
+					});
+				}
+				this.oColorPickerSimplifiedPopover.openBy(oEvent.getSource());
+			},
 
+			handleChange: function (oEvent) {
+				var oView = this.getView(),
+					oInput = oView.byId(this.inputId);
+
+				oInput.setValue(oEvent.getParameter("colorString"));
+				oInput.setValueState("None");
+				this.inputId = "";
+				MessageToast.show("Chosen color string: " + oEvent.getParameter("colorString"));
+			},
+
+			handleInputChange: function (oEvent) {
+				var oInput = oEvent.getSource(),
+					bValid = coreLibrary.CSSColor.isValid(oEvent.getParameter("value")),
+					sState = bValid ? "None" : "Error";
+
+				oInput.setValueState(sState);
+			},
 			// Errors Pressed
 			onMessagePopoverPress: function (oEvent) {
 				if (!this.byId("errorMessagePopover")) {
