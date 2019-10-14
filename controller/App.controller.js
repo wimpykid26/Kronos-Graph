@@ -121,19 +121,19 @@ sap.ui.define([
 				if (!this._valueHelpDialog || this._valueHelpDialog.bIsDestroyed) {
 					switch (oEvent.getSource().getId()) {
 						case 'container-graphapp---app--multiInput':
-							name = "kronos.ui.graphapp.view.InputDialog";
+							name = "kronos.ui.graphapp.view.fragment.InputDialog";
 							title = 'Edge Type';
 							break;
 						case 'container-graphapp---app--multiInputVertex':
-							name = "kronos.ui.graphapp.view.VertexSearchHelp";
+							name = "kronos.ui.graphapp.view.fragment.VertexSearchHelp";
 							title = 'Source Node Type';
 							break;
 						case 'container-graphapp---app--multiInputVertex2':
-							name = "kronos.ui.graphapp.view.VertexSearchHelp";
+							name = "kronos.ui.graphapp.view.fragment.VertexSearchHelp";
 							title = 'Target Node Type';
 							break;
 						case 'container-graphapp---app--multiInputNode':
-							name = "kronos.ui.graphapp.view.NodeSearchHelp";
+							name = "kronos.ui.graphapp.view.fragment.NodeSearchHelp";
 							title = 'Node Type';
 							break;
 					}
@@ -219,7 +219,7 @@ sap.ui.define([
 					}
 				});
 				if (!this._oDialogList) {
-					this._oDialogList = sap.ui.xmlfragment(this.getView().getId(), "kronos.ui.graphapp.view.Dialog", this);
+					this._oDialogList = sap.ui.xmlfragment(this.getView().getId(), "kronos.ui.graphapp.view.fragment.Dialog", this);
 				}
 				var oNavigationPopover = new ResponsivePopover({
 					title: oBundle.getText(popoverTitle[key]),
