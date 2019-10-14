@@ -4,20 +4,16 @@
     xmlns="sap.m" controllerName="kronos.ui.graphapp.controller.App">
     <List class="sapUiContentPadding">
         <InputListItem label="Location" class="sapUiTinyMargin myCustomText">
-            <MultiInput width="200px" id="multiInputSource" class="sapUiTinyMargin sapUiContentPadding" suggestionItems="{
-				path: 'graph>/nodes',
-				sorter: { path: 'graph>title' }
-			}" valueHelpRequest="handleValueHelp">
-                <core:Item key="{graph>key}" text="{graph>title}" />
-            </MultiInput>
+            <Input id="colorLocation" type="Text" width="200px" placeholder="Enter Color ..." showValueHelp="true" valueHelpRequest="openColorPicker" change="handleInputChange"/>
         </InputListItem>
         <InputListItem label="Organization" class="sapUiTinyMargin myCustomText">
-            <MultiInput width="200px" id="multiInputTarget" class="sapUiTinyMargin sapUiContentPadding" suggestionItems="{
-				path: 'graph>/nodes',
-				sorter: { path: 'graph>title' }
-			}" valueHelpRequest="handleValueHelp">
-                <core:Item key="{graph>key}" text="{graph>title}" />
-            </MultiInput>
+            <Input id="colorOrganization" type="Text" width="200px" placeholder="Enter Color ..." showValueHelp="true" valueHelpRequest="openColorPicker" change="handleInputChange"/>
+        </InputListItem>
+        <InputListItem label="Person" class="sapUiTinyMargin myCustomText">
+            <Input id="colorPerson" type="Text" width="200px" placeholder="Enter Color ..." showValueHelp="true" valueHelpRequest="openColorPicker" change="handleInputChange"/>
+        </InputListItem>
+        <InputListItem label="Time" class="sapUiTinyMargin myCustomText">
+            <Input id="colorTime" type="Text" width="200px" placeholder="Enter Color ..." showValueHelp="true" valueHelpRequest="openColorPicker" change="handleInputChange"/>
         </InputListItem>
     </List>
 </core:FragmentDefinition>

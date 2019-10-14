@@ -24,7 +24,8 @@ sap.ui.define([
 	'sap/m/Label',
 	'sap/ui/model/Filter',
 	'sap/m/Token',
-	'sap/ui/model/FilterOperator'
+	'sap/ui/model/FilterOperator',
+	'sap/ui/unified/ColorPickerPopover'
 ], function (
 	BaseController,
 	Fragment,
@@ -51,7 +52,8 @@ sap.ui.define([
 	Label,
 	Filter,
 	Token,
-	FilterOperator
+	FilterOperator,
+	ColorPickerPopover
 ) {
 		"use strict";
 
@@ -235,6 +237,9 @@ sap.ui.define([
 					case 'shortestDistance':
 						oDialog = "kronos.ui.graphapp.view.fragment.ShortestDistance";
 						break;
+					case 'legends':
+						oDialog = "kronos.ui.graphapp.view.fragment.Legends";
+						break;
 				}
 				this._oDialogList = sap.ui.xmlfragment(this.getView().getId(), oDialog, this);
 
@@ -319,7 +324,36 @@ sap.ui.define([
 					oToggleButton.setTooltip('Small Size Navigation');
 				}
 			},
+			openColorPicker: function (oEvent) {
+				this.inputId = oEvent.getSource().getId();
+				if (!this.oColorPickerSimplifiedPopover) {
+					this.oColorPickerSimplifiedPopover = new ColorPickerPopover("oColorPickerSimpplifiedPopover", {
+						colorString: "pink",
+						displayMode: sap.ui.unified.ColorPickerDisplayMode.Simplified,
+						mode: sap.ui.unified.ColorPickerMode.HSL,
+						change: this.handleChange.bind(this)
+					});
+				}
+				this.oColorPickerSimplifiedPopover.openBy(oEvent.getSource());
+			},
 
+			handleChange: function (oEvent) {
+				var oView = this.getView(),
+					oInput = oView.byId(this.inputId);
+
+				oInput.setValue(oEvent.getParameter("colorString"));
+				oInput.setValueState("None");
+				this.inputId = "";
+				MessageToast.show("Chosen color string: " + oEvent.getParameter("colorString"));
+			},
+
+			handleInputChange: function (oEvent) {
+				var oInput = oEvent.getSource(),
+					bValid = coreLibrary.CSSColor.isValid(oEvent.getParameter("value")),
+					sState = bValid ? "None" : "Error";
+
+				oInput.setValueState(sState);
+			},
 			// Errors Pressed
 			onMessagePopoverPress: function (oEvent) {
 				if (!this.byId("errorMessagePopover")) {
