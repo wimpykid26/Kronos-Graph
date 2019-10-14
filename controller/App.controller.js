@@ -71,9 +71,11 @@ sap.ui.define([
 			onInit: function () {
 				// set explored app's demo model on this sample
 				var dataModel = this.getOwnerComponent().getModel("edges");
+				var graphModel = this.getOwnerComponent().getModel("graph");
 				// the default limit of the model is set to 100. We want to show all the entries.
 				dataModel.setSizeLimit(1000000);
 				this.getView().setModel(dataModel);
+				this.getView().setModel(graphModel, "graph");
 				this.getView().addStyleClass(this.getOwnerComponent().getContentDensityClass());
 				// if the app starts on desktop devices with small or meduim screen size, collaps the sid navigation
 				if (Device.resize.width <= 1024) {
@@ -130,6 +132,10 @@ sap.ui.define([
 							name = "kronos.ui.graphapp.view.VertexSearchHelp";
 							title = 'Target Node Type';
 							break;
+						case 'container-graphapp---app--multiInputNode':
+							name = "kronos.ui.graphapp.view.NodeSearchHelp";
+							title = 'Node Type';
+							break;
 					}
 					Fragment.load({
 						id: this.getView().getId(),
@@ -148,8 +154,14 @@ sap.ui.define([
 
 			_openValueHelpDialog: function (sInputValue) {
 				// create a filter for the binding
+				var filter = '';
+				if (this._valueHelpDialog.getTitle() == 'Node Type') {
+					filter = 'title';
+				} else {
+					filter = 'Name'
+				}
 				this._valueHelpDialog.getBinding("items").filter([new Filter(
-					"Name",
+					filter,
 					FilterOperator.Contains,
 					sInputValue
 				)]);
@@ -160,8 +172,14 @@ sap.ui.define([
 
 			_handleValueHelpSearch: function (evt) {
 				var sValue = evt.getParameter("value");
+				var filter = '';
+				if (this._valueHelpDialog.getTitle() == 'Node Type') {
+					filter = 'title';
+				} else {
+					filter = 'Name'
+				}
 				var oFilter = new Filter(
-					"Name",
+					filter,
 					FilterOperator.Contains,
 					sValue
 				);
@@ -175,6 +193,7 @@ sap.ui.define([
 					case 'Edge Type': oMultiInput = this.byId("multiInput"); break;
 					case 'Source Node Type': oMultiInput = this.byId("multiInputVertex"); break;
 					case 'Target Node Type': oMultiInput = this.byId("multiInputVertex2"); break;
+					case 'Node Type': oMultiInput = this.byId("multiInputNode"); break;
 				}
 				if (aSelectedItems && aSelectedItems.length > 0) {
 					aSelectedItems.forEach(function (oItem) {

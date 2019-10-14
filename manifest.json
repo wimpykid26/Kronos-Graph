@@ -72,6 +72,10 @@
 			"edges": {
 				"type": "sap.ui.model.json.JSONModel",
 				"uri": "model/dialog.json"
+			},
+			"graph": {
+				"type": "sap.ui.model.json.JSONModel",
+				"uri": "model/graph.json"
 			}
 		},
 		"routing": {

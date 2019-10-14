@@ -28,7 +28,12 @@
             </MultiInput>
         </InputListItem>
         <InputListItem label="Node" class="sapUiTinyMargin myCustomText">
-            <RadioButton groupName="GroupInputListItem" />
+            <MultiInput width="200px" id="multiInputNode" class="sapUiTinyMargin sapUiContentPadding" suggestionItems="{
+				path: '/nodes',
+				sorter: { path: 'title' }
+			}" valueHelpRequest="handleValueHelp">
+                <core:Item key="{key}" text="{title}" />
+            </MultiInput>
         </InputListItem>
     </List>
 </core:FragmentDefinition>
