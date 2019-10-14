@@ -12,7 +12,12 @@
             </MultiInput>
         </InputListItem>
         <InputListItem label="Souce Node Type" class="sapUiTinyMargin myCustomText">
-            <CheckBox selected="true" />
+            <MultiInput width="200px" id="multiInputVertex" class="sapUiTinyMargin sapUiContentPadding" suggestionItems="{
+				path: '/VertexType',
+				sorter: { path: 'Name' }
+			}" valueHelpRequest="handleValueHelp">
+                <core:Item key="{ProductId}" text="{Name}" />
+            </MultiInput>
         </InputListItem>
         <InputListItem label="Destination Node Type" class="sapUiTinyMargin myCustomText">
             <RadioButton groupName="GroupInputListItem" selected="true" />

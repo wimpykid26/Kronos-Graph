@@ -36,5 +36,31 @@
             "Description": "Relationship between Organization and Time",
             "Name": "Organization To Time"
         }
+    ],
+    "VertexType": [
+        {
+            "ProductId": "Vertex-0001",
+            "Category": "Vertex",
+            "Description": "Person",
+            "Name": "Person Entity Type"
+        },
+        {
+            "ProductId": "Vertex-0002",
+            "Category": "Vertex",
+            "Description": "Time",
+            "Name": "Time Entity Type"
+        },
+        {
+            "ProductId": "Vertex-0003",
+            "Category": "Vertex",
+            "Description": "Location",
+            "Name": "Location Entity Type"
+        },
+        {
+            "ProductId": "Vertex-0004",
+            "Category": "Vertex",
+            "Description": "Organization",
+            "Name": "Organization Entity Type"
+        }
     ]
 }
