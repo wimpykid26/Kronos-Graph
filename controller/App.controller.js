@@ -185,7 +185,6 @@ sap.ui.define([
 					contentWidth: "500px",
 					placement: PlacementType.Horizontal,
 					content: this._oDialogList,
-
 				});
 				this.byId("app").addDependent(oNavigationPopover);
 				// forward compact/cozy style into dialog
