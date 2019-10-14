@@ -5,7 +5,7 @@
     <List class="sapUiContentPadding">
         <InputListItem label="Edge Type" class="sapUiTinyMargin myCustomText">
             <MultiInput width="200px" id="multiInput" class="sapUiTinyMargin sapUiContentPadding" suggestionItems="{
-				path: '/ProductCollection',
+				path: '/EdgeCollection',
 				sorter: { path: 'Name' }
 			}" valueHelpRequest="handleValueHelp">
                 <core:Item key="{ProductId}" text="{Name}" />

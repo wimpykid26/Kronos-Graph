@@ -1,0 +1,40 @@
+{
+    "EdgeCollection": [
+        {
+            "ProductId": "Edge-0001",
+            "Category": "Edge",
+            "Description": "Relationship between Location and Person",
+            "Name": "Location To Person"
+        },
+        {
+            "ProductId": "Edge-0002",
+            "Category": "Edge",
+            "Description": "Relationship between Time and Person",
+            "Name": "Time To Person"
+        },
+        {
+            "ProductId": "Edge-0003",
+            "Category": "Edge",
+            "Description": "Relationship between Location and Time",
+            "Name": "Time To Location"
+        },
+        {
+            "ProductId": "Edge-0004",
+            "Category": "Edge",
+            "Description": "Relationship between Organization and Person",
+            "Name": "Organization To Person"
+        },
+        {
+            "ProductId": "Edge-0005",
+            "Category": "Edge",
+            "Description": "Relationship between Organization and Location",
+            "Name": "Organization To Location"
+        },
+        {
+            "ProductId": "Edge-0006",
+            "Category": "Edge",
+            "Description": "Relationship between Organization and Time",
+            "Name": "Organization To Time"
+        }
+    ]
+}

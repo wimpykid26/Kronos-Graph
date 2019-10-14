@@ -70,7 +70,7 @@ sap.ui.define([
 
 			onInit: function () {
 				// set explored app's demo model on this sample
-				var dataModel = this.getOwnerComponent().getModel("products");
+				var dataModel = this.getOwnerComponent().getModel("edges");
 				// the default limit of the model is set to 100. We want to show all the entries.
 				dataModel.setSizeLimit(1000000);
 				this.getView().setModel(dataModel);
