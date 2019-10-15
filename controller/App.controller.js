@@ -212,7 +212,9 @@ sap.ui.define([
 					case 'Nearest Neighborhood':
 						var oSingleInput = this.byId("InputNeighbor");
 						if (aSelectedItems && aSelectedItems.length > 0) {
-							oSingleInput.setValue(aSelectedItems[0].getTitle())
+							oSingleInput.addToken(new Token({
+								text: aSelectedItems[0].getTitle()
+							}))
 						}
 						this._valueHelpDialog.destroy();
 						return;
@@ -227,9 +229,16 @@ sap.ui.define([
 				this._valueHelpDialog.destroy();
 			},
 
-			_closeDialogBox() {
+			_closeDialogBox: function () {
 				//Get Selected Keys from Single Input.
 				//Nearest Neighborhood
+				var filter = {};
+				var oNearestNeighbor = this.byId("InputNeighbor").getTokens()[0].getText();
+				var graphModel = this.getModel("graph").getProperty("/nodes");
+				if (oNearestNeighbor && graphModel) {
+					filter.nearestNeighborKey = graphModel.find((node) => { return node.title == oNearestNeighbor }).key;
+				}
+				//Fire event for graph listener.
 			},
 
 			_openNavPopover(key, oEvent) {
@@ -243,8 +252,8 @@ sap.ui.define([
 				var oButton = new Button({
 					text: oBundle.getText("navigationButtonText"),
 					press: function () {
-						this._closeDialogBox()
-					}
+						this._closeDialogBox();
+					}.bind(this)
 				});
 				var oDialog = '';
 				switch (key) {
