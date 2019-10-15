@@ -9,13 +9,18 @@ sap.ui.define([
 		formatter: formatter,
 
 		onInit: function () {
-			var oViewModel = new JSONModel({
-				isPhone: Device.system.phone
+			var graphModel = this.getOwnerComponent().getModel("graph");
+			graphModel.setSizeLimit(Number.MAX_SAFE_INTEGER);
+			this.setModel(graphModel);
+			this.oModelSettings = new JSONModel({
+				maxIterations: 200,
+				maxTime: 500,
+				initialTemperature: 200,
+				coolDownStep: 1
 			});
-			this.setModel(oViewModel, "view");
-			Device.media.attachHandler(function (oDevice) {
-				this.getModel("view").setProperty("/isPhone", oDevice.name === "Phone");
-			}.bind(this));
+			this.getView().setModel(this.oModelSettings, "settings");
+			this.oGraph = this.byId("graph");
+			this.oGraph._fZoomLevel = 0.75;
 		}
 	});
 });

@@ -1,11 +1,43 @@
 <mvc:View controllerName="kronos.ui.graphapp.controller.Home" 
-	xmlns="sap.m" 
+	xmlns="sap.suite.ui.commons.networkgraph" 
+	xmlns:layout="sap.suite.ui.commons.networkgraph.layout" 
+	xmlns:m="sap.m" 
 	xmlns:l="sap.ui.layout" 
 	xmlns:core="sap.ui.core" 
 	xmlns:mvc="sap.ui.core.mvc">
-	<Page showHeader="false">
-		<landmarkInfo>
-			<PageAccessibleLandmarkInfo rootRole="Region" rootLabel="{i18n>Home_rootLabel}" contentRole="Main" contentLabel="{i18n>Home_contentLabel}"/>
-		</landmarkInfo>
-	</Page>
+	<m:Page showHeader="false">
+		<m:landmarkInfo>
+			<m:PageAccessibleLandmarkInfo rootRole="Region" rootLabel="{i18n>Home_rootLabel}" contentRole="Main" contentLabel="{i18n>Home_contentLabel}"/>
+		</m:landmarkInfo>
+
+		<l:FixFlex vertical="false" fixContentSize="100%">
+			<l:fixContent>
+				<Graph enableWheelZoom="false" nodes="{/nodes}" lines="{/lines}" groups="{/groups}" id="graph">
+					<layoutData>
+						<m:FlexItemData minWidth="75%" maxWidth="75%"/>
+					</layoutData>
+					<layoutAlgorithm>
+						<layout:ForceDirectedLayout optimalDistanceConstant="0.26" maxIterations="{settings>/maxIterations}" maxTime="{settings>/maxTime}" initialTemperature="{settings>/initialTemperature}" coolDownStep="{settings>/coolDownStep}">
+						</layout:ForceDirectedLayout>
+					</layoutAlgorithm>
+					<nodes>
+						<Node height="{settings>/height}" key="{key}" title="{title}" icon="{icon}" group="{group}" attributes="{path:'attributes', templateShareable:true}" shape="{shape}" status="{status}" x="{x}" y="{y}">
+							<attributes>
+								<ElementAttribute label="{label}" value="{value}"/>
+							</attributes>
+						</Node>
+					</nodes>
+					<lines>
+						<Line from="{from}" to="{to}" status="{status}">
+						</Line>
+					</lines>
+					<groups>
+						<Group key="{key}" title="{title}">
+						</Group>
+					</groups>
+				</Graph>
+			</l:fixContent>
+		</l:FixFlex>
+
+	</m:Page>
 </mvc:View>
