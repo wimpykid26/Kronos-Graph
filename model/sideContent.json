@@ -25,8 +25,8 @@
 					"key": "shortestDistance"
 				},
 				{
-					"title": "To be Added",
-					"key": "To be Added was pressed"
+					"title": "Nearest Neighborhood",
+					"key": "nearestNeighborhood"
 				}
 			]
 		},
