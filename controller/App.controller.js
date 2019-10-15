@@ -145,6 +145,10 @@ sap.ui.define([
 							name = "kronos.ui.graphapp.view.fragment.NodeSearchHelp";
 							title = 'Target Node';
 							break;
+						case 'container-graphapp---app--InputNeighbor':
+							name = "kronos.ui.graphapp.view.fragment.SingleNodeSearch";
+							title = 'Nearest Neighborhood';
+							break;
 					}
 					Fragment.load({
 						id: this.getView().getId(),
@@ -205,6 +209,13 @@ sap.ui.define([
 					case 'Node': oMultiInput = this.byId("multiInputNode"); break;
 					case 'Source Node': oMultiInput = this.byId("multiInputSource"); break;
 					case 'Target Node': oMultiInput = this.byId("multiInputTarget"); break;
+					case 'Nearest Neighborhood':
+						var oSingleInput = this.byId("InputNeighbor");
+						if (aSelectedItems && aSelectedItems.length > 0) {
+							oSingleInput.setValue(aSelectedItems[0].getTitle())
+						}
+						this._valueHelpDialog.destroy();
+						return;
 				}
 				if (aSelectedItems && aSelectedItems.length > 0) {
 					aSelectedItems.forEach(function (oItem) {
@@ -220,7 +231,8 @@ sap.ui.define([
 				const popoverTitle = {
 					"filters": "filterTitle",
 					"legends": "legendTitle",
-					"shortestDistance": "shortestDistanceTitle"
+					"shortestDistance": "shortestDistanceTitle",
+					"nearestNeighborhood": "nearestNeighborhoodTitle"
 				};
 				var oBundle = this.getModel("i18n").getResourceBundle();
 				var oButton = new Button({
@@ -239,6 +251,9 @@ sap.ui.define([
 						break;
 					case 'legends':
 						oDialog = "kronos.ui.graphapp.view.fragment.Legends";
+						break;
+					case 'nearestNeighborhood':
+						oDialog = "kronos.ui.graphapp.view.fragment.NearestNeighborhood";
 						break;
 				}
 				this._oDialogList = sap.ui.xmlfragment(this.getView().getId(), oDialog, this);

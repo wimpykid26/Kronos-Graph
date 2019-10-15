@@ -1,0 +1,15 @@
+<core:FragmentDefinition xmlns:l="sap.ui.layout" 
+    xmlns:core="sap.ui.core" 
+    xmlns:mvc="sap.ui.core.mvc" 
+    xmlns="sap.m" controllerName="kronos.ui.graphapp.controller.App">
+    <List class="sapUiContentPadding">
+        <InputListItem label="Neighbor Node" class="sapUiTinyMargin myCustomText">
+            <MultiInput width="200px" id="InputNeighbor" class="sapUiTinyMargin sapUiContentPadding" suggestionItems="{
+				path: 'graph>/nodes',
+				sorter: { path: 'graph>title' }
+			}" valueHelpRequest="handleValueHelp">
+                <core:Item key="{graph>key}" text="{graph>title}" />
+            </MultiInput>
+        </InputListItem>
+    </List>
+</core:FragmentDefinition>
