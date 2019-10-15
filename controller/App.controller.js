@@ -243,6 +243,7 @@ sap.ui.define([
 					var EventBus = sap.ui.getCore().getEventBus();
 					EventBus.publish("FilterChannel", "DialogClose", filter);
 					debugger;
+					this._oNavigationPopover.close();
 				}
 			},
 
@@ -292,6 +293,7 @@ sap.ui.define([
 				// forward compact/cozy style into dialog
 				syncStyleClass(this.getView().getController().getOwnerComponent().getContentDensityClass(), this.getView(), oNavigationPopover);
 				oNavigationPopover.openBy(oEvent.getSource());
+				this._oNavigationPopover = oNavigationPopover;
 			},
 
 			onUserNamePress: function (oEvent) {
@@ -302,7 +304,7 @@ sap.ui.define([
 					oMessagePopover.destroy();
 				}
 				var fnHandleUserMenuItemPress = function (oEvent) {
-					MessageToaost.show(oEvent.getSource().getText() + " was pressed");
+					MessageToast.show(oEvent.getSource().getText() + " was pressed");
 				};
 				var oActionSheet = new ActionSheet(this.getView().createId("userMessageActionSheet"), {
 					title: oBundle.getText("userHeaderTitle"),
