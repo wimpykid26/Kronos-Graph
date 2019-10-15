@@ -25,7 +25,7 @@ sap.ui.define([
 	'sap/ui/model/Filter',
 	'sap/m/Token',
 	'sap/ui/model/FilterOperator',
-	'sap/ui/unified/ColorPickerPopover'
+	'sap/ui/unified/ColorPickerPopover',
 ], function (
 	BaseController,
 	Fragment,
@@ -53,8 +53,8 @@ sap.ui.define([
 	Filter,
 	Token,
 	FilterOperator,
-	ColorPickerPopover
-) {
+	ColorPickerPopover,
+	) {
 		"use strict";
 
 		// shortcut for sap.m.PlacementType
@@ -239,6 +239,11 @@ sap.ui.define([
 					filter.nearestNeighborKey = graphModel.find((node) => { return node.title == oNearestNeighbor }).key;
 				}
 				//Fire event for graph listener.
+				if (filter) {
+					var EventBus = sap.ui.getCore().getEventBus();
+					EventBus.publish("FilterChannel", "DialogClose", filter);
+					debugger;
+				}
 			},
 
 			_openNavPopover(key, oEvent) {

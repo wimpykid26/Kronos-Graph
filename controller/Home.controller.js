@@ -9,6 +9,8 @@ sap.ui.define([
 		formatter: formatter,
 
 		onInit: function () {
+			var EventBus = sap.ui.getCore().getEventBus();
+			EventBus.subscribe("FilterChannel", "DialogClose", this._handleFilterEvent, this)
 			var graphModel = this.getOwnerComponent().getModel("graph");
 			graphModel.setSizeLimit(Number.MAX_SAFE_INTEGER);
 			this.setModel(graphModel);
@@ -21,6 +23,10 @@ sap.ui.define([
 			this.getView().setModel(this.oModelSettings, "settings");
 			this.oGraph = this.byId("graph");
 			this.oGraph._fZoomLevel = 0.75;
+		},
+
+		_handleFilterEvent: function (sChanel, sEvent, sData) {
+			debugger;
 		}
 	});
 });
