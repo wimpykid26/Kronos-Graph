@@ -26,7 +26,7 @@ sap.ui.define([
 		},
 
 		_handleFilterEvent: function (sChanel, sEvent, sData) {
-			debugger;
+
 		}
 	});
 });

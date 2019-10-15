@@ -74,6 +74,20 @@ sap.ui.define([
 				// set explored app's demo model on this sample
 				var dataModel = this.getOwnerComponent().getModel("edges");
 				var graphModel = this.getOwnerComponent().getModel("graph");
+				var viewModel = new JSONModel({
+					nearestNeighborhood: [],
+					legends: {
+						location: '',
+						organization: '',
+						person: '',
+						time: ''
+					},
+					shortestDistance: {
+						sourceVertex: '',
+						targetVertex: ''
+					},
+				})
+				this.getView().setModel(viewModel, "view");
 				// the default limit of the model is set to 100. We want to show all the entries.
 				dataModel.setSizeLimit(1000000);
 				this.getView().setModel(dataModel);
@@ -202,6 +216,8 @@ sap.ui.define([
 			_handleValueHelpClose: function (evt) {
 				var aSelectedItems = evt.getParameter("selectedItems");
 				var oMultiInput = '';
+				var viewModelPath = '';
+				//Empty previous states and enter new values;
 				switch (evt.getSource().getTitle()) {
 					case 'Edge Type': oMultiInput = this.byId("multiInput"); break;
 					case 'Source Node Type': oMultiInput = this.byId("multiInputVertex"); break;
@@ -210,40 +226,45 @@ sap.ui.define([
 					case 'Source Node': oMultiInput = this.byId("multiInputSource"); break;
 					case 'Target Node': oMultiInput = this.byId("multiInputTarget"); break;
 					case 'Nearest Neighborhood':
-						var oSingleInput = this.byId("InputNeighbor");
-						if (aSelectedItems && aSelectedItems.length > 0) {
-							oSingleInput.addToken(new Token({
-								text: aSelectedItems[0].getTitle()
-							}))
-						}
-						this._valueHelpDialog.destroy();
-						return;
+						viewModelPath = "/nearestNeighborhood";
+						this.getModel("view").setProperty("/nearestNeighborhood", [])
+						var oMultiInput = this.byId("InputNeighbor");
+						break;
 				}
 				if (aSelectedItems && aSelectedItems.length > 0) {
+					var viewArr = [];
 					aSelectedItems.forEach(function (oItem) {
+						//Append to UI Element
 						oMultiInput.addToken(new Token({
 							text: oItem.getTitle()
 						}));
+						viewArr.push(new Token({
+							text: oItem.getTitle()
+						}));
 					});
+					this.getModel("view").setProperty(viewModelPath, viewArr)
 				}
 				this._valueHelpDialog.destroy();
 			},
 
-			_closeDialogBox: function () {
-				//Get Selected Keys from Single Input.
-				//Nearest Neighborhood
+			_setViewModel: function (event) {
+				//Get Source trigger and set view model accordingly
+			},
+
+			_setFilterFromModel: function () {
+				//Set filter object from Model
+			},
+
+			_closeDialogBox: function (event) {
 				var filter = {};
-				var oNearestNeighbor = this.byId("InputNeighbor").getTokens()[0].getText();
-				var graphModel = this.getModel("graph").getProperty("/nodes");
-				if (oNearestNeighbor && graphModel) {
-					filter.nearestNeighborKey = graphModel.find((node) => { return node.title == oNearestNeighbor }).key;
-				}
+				//Set View Model
+				//Populate filter from model
+				//Trigger event accordingly sending filter
+				//Nearest Neighborhood
 				//Fire event for graph listener.
 				if (filter) {
 					var EventBus = sap.ui.getCore().getEventBus();
 					EventBus.publish("FilterChannel", "DialogClose", filter);
-					debugger;
-					this._oNavigationPopover.close();
 				}
 			},
 
@@ -258,7 +279,7 @@ sap.ui.define([
 				var oButton = new Button({
 					text: oBundle.getText("navigationButtonText"),
 					press: function () {
-						this._closeDialogBox();
+						this._oNavigationPopover.close();
 					}.bind(this)
 				});
 				var oDialog = '';
@@ -285,17 +306,38 @@ sap.ui.define([
 					contentWidth: "500px",
 					placement: PlacementType.Horizontal,
 					content: this._oDialogList,
-					afterClose: function () {
+					afterClose: function (evt) {
+						this._closeDialogBox(evt);
 						oNavigationPopover.destroy();
-					}
+					}.bind(this)
 				});
 				this.byId("app").addDependent(oNavigationPopover);
+				this._populateFilters(key);
 				// forward compact/cozy style into dialog
 				syncStyleClass(this.getView().getController().getOwnerComponent().getContentDensityClass(), this.getView(), oNavigationPopover);
 				oNavigationPopover.openBy(oEvent.getSource());
 				this._oNavigationPopover = oNavigationPopover;
 			},
-
+			_populateFilters: function (key) {
+				var multiInput = '';
+				switch (key) {
+					case 'filters':
+						oDialog = "kronos.ui.graphapp.view.fragment.Dialog";
+						break;
+					case 'shortestDistance':
+						oDialog = "kronos.ui.graphapp.view.fragment.ShortestDistance";
+						break;
+					case 'legends':
+						oDialog = "kronos.ui.graphapp.view.fragment.Legends";
+						break;
+					case 'nearestNeighborhood':
+						multiInput = this.byId("InputNeighbor");
+						this.getModel("view").getProperty("/nearestNeighborhood").forEach((token) => {
+							multiInput.addToken(token);
+						});
+						break;
+				}
+			},
 			onUserNamePress: function (oEvent) {
 				var oBundle = this.getModel("i18n").getResourceBundle();
 				// close message popover
