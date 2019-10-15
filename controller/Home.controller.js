@@ -21,6 +21,7 @@ sap.ui.define([
 			this.getView().setModel(this.oModelSettings, "settings");
 			this.oGraph = this.byId("graph");
 			this.oGraph._fZoomLevel = 0.75;
+			debugger;
 		}
 	});
 });
