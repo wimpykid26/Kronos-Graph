@@ -227,6 +227,11 @@ sap.ui.define([
 				this._valueHelpDialog.destroy();
 			},
 
+			_closeDialogBox() {
+				//Get Selected Keys from Single Input.
+				//Nearest Neighborhood
+			},
+
 			_openNavPopover(key, oEvent) {
 				const popoverTitle = {
 					"filters": "filterTitle",
@@ -238,7 +243,7 @@ sap.ui.define([
 				var oButton = new Button({
 					text: oBundle.getText("navigationButtonText"),
 					press: function () {
-						MessageToast.show("Show all Notifications was pressed");
+						this._closeDialogBox()
 					}
 				});
 				var oDialog = '';
@@ -283,7 +288,7 @@ sap.ui.define([
 					oMessagePopover.destroy();
 				}
 				var fnHandleUserMenuItemPress = function (oEvent) {
-					MessageToast.show(oEvent.getSource().getText() + " was pressed");
+					MessageToaost.show(oEvent.getSource().getText() + " was pressed");
 				};
 				var oActionSheet = new ActionSheet(this.getView().createId("userMessageActionSheet"), {
 					title: oBundle.getText("userHeaderTitle"),
@@ -355,7 +360,6 @@ sap.ui.define([
 			handleChange: function (oEvent) {
 				var oView = this.getView(),
 					oInput = oView.byId(this.inputId);
-
 				oInput.setValue(oEvent.getParameter("colorString"));
 				oInput.setValueState("None");
 				this.inputId = "";
