@@ -225,30 +225,62 @@ sap.ui.define([
 					case 'Node': oMultiInput = this.byId("multiInputNode"); break;
 					case 'Source Node': oMultiInput = this.byId("multiInputSource"); break;
 					case 'Target Node': oMultiInput = this.byId("multiInputTarget"); break;
-					case 'Nearest Neighborhood':
-						viewModelPath = "/nearestNeighborhood";
-						this.getModel("view").setProperty("/nearestNeighborhood", [])
-						var oMultiInput = this.byId("InputNeighbor");
-						break;
+					case 'Nearest Neighborhood': oMultiInput = this.byId("InputNeighbor"); break;
 				}
 				if (aSelectedItems && aSelectedItems.length > 0) {
-					var viewArr = [];
 					aSelectedItems.forEach(function (oItem) {
 						//Append to UI Element
 						oMultiInput.addToken(new Token({
 							text: oItem.getTitle()
 						}));
-						viewArr.push(new Token({
-							text: oItem.getTitle()
-						}));
 					});
-					this.getModel("view").setProperty(viewModelPath, viewArr)
 				}
 				this._valueHelpDialog.destroy();
 			},
 
 			_setViewModel: function (event) {
 				//Get Source trigger and set view model accordingly
+				var UInput = [];
+				var modelPath = [];
+				var oBundle = this.getModel("i18n").getResourceBundle();
+				//Set View Model
+				switch (event.getSource().getTitle()) {
+					case oBundle.getText("nearestNeighborhoodTitle"): {
+						UInput.push(this.byId("InputNeighbor"));
+						modelPath.push("/nearestNeighborhood");
+						break;
+					}
+					case oBundle.getText("legendTitle"): {
+						UInput.push(this.byId("colorLocation"), this.byId("colorOrganization"), this.byId("colorPerson"), this.byId("colorTime"));
+						modelPath.push("/legends/location", "/legends/organization", "/legends/person", "/legends/time");
+						break;
+					}
+					case oBundle.getText("shortestDistanceTitle"): {
+						UInput.push(this.byId("multiInputSource"), this.byId("multiInputTarget"));
+						modelPath.push("/shortestDistance/sourceVertex", "/shortestDistance/targetVertex");
+						break;
+					}
+					case oBundle.getText("filterTitle"): {
+						break;
+					}
+				}
+				var valArr = []
+				if (UInput && UInput.length > 0) {
+					UInput.forEach((input, index) => {
+						if (event.getSource().getTitle() != oBundle.getText("legendTitle")) {
+							valArr = [];
+							var tokenArr = input.getTokens();
+							if (tokenArr && tokenArr.length > 0) {
+								tokenArr.forEach((token) => {
+									valArr.push(token);
+								})
+							}
+							this.getModel("view").setProperty(modelPath[index], valArr);
+						} else {
+							this.getModel("view").setProperty(modelPath[index], input.getValue());
+						}
+					})
+				}
 			},
 
 			_setFilterFromModel: function () {
@@ -256,8 +288,9 @@ sap.ui.define([
 			},
 
 			_closeDialogBox: function (event) {
+				//Set model
 				var filter = {};
-				//Set View Model
+				this._setViewModel(event);
 				//Populate filter from model
 				//Trigger event accordingly sending filter
 				//Nearest Neighborhood
@@ -319,23 +352,40 @@ sap.ui.define([
 				this._oNavigationPopover = oNavigationPopover;
 			},
 			_populateFilters: function (key) {
-				var multiInput = '';
+				//Set filters on dialog box while opening.
+				var UInput = [];
+				var modelPath = [];
 				switch (key) {
 					case 'filters':
-						oDialog = "kronos.ui.graphapp.view.fragment.Dialog";
 						break;
 					case 'shortestDistance':
-						oDialog = "kronos.ui.graphapp.view.fragment.ShortestDistance";
+						UInput.push(this.byId("multiInputSource"), this.byId("multiInputTarget"));
+						modelPath.push("/shortestDistance/sourceVertex", "/shortestDistance/targetVertex");
 						break;
 					case 'legends':
-						oDialog = "kronos.ui.graphapp.view.fragment.Legends";
+						UInput.push(this.byId("colorLocation"), this.byId("colorOrganization"), this.byId("colorPerson"), this.byId("colorTime"));
+						modelPath.push("/legends/location", "/legends/organization", "/legends/person", "/legends/time");
 						break;
 					case 'nearestNeighborhood':
-						multiInput = this.byId("InputNeighbor");
-						this.getModel("view").getProperty("/nearestNeighborhood").forEach((token) => {
-							multiInput.addToken(token);
-						});
+						UInput.push(this.byId("InputNeighbor"));
+						modelPath.push("/nearestNeighborhood");
 						break;
+				}
+				if (UInput) {
+					UInput.forEach((input, index) => {
+						if (key != "legends") {
+							var modelArr = this.getModel("view").getProperty(modelPath[index]);
+							if (modelArr && modelArr.length > 0) {
+								modelArr.forEach((token) => {
+									input.addToken(new Token({
+										text: token.getText()
+									}))
+								});
+							}
+						} else {
+							input.setValue(this.getModel("view").getProperty(modelPath[index]))
+						}
+					})
 				}
 			},
 			onUserNamePress: function (oEvent) {
