@@ -71,10 +71,15 @@ sap.ui.define([
 			_bExpanded: true,
 
 			onInit: function () {
-				// set explored app's demo model on this sample
 				var dataModel = this.getOwnerComponent().getModel("edges");
 				var graphModel = this.getOwnerComponent().getModel("graph");
 				var viewModel = new JSONModel({
+					filters: {
+						sourceNodeType: [],
+						targetNodeType: [],
+						edgeType: [],
+						nodes: []
+					},
 					nearestNeighborhood: [],
 					legends: {
 						location: '',
@@ -87,10 +92,8 @@ sap.ui.define([
 						targetVertex: ''
 					},
 				})
+				this.getView().setModel(dataModel, "filters");
 				this.getView().setModel(viewModel, "view");
-				// the default limit of the model is set to 100. We want to show all the entries.
-				dataModel.setSizeLimit(1000000);
-				this.getView().setModel(dataModel);
 				this.getView().setModel(graphModel, "graph");
 				this.getView().addStyleClass(this.getOwnerComponent().getContentDensityClass());
 				// if the app starts on desktop devices with small or meduim screen size, collaps the sid navigation
@@ -261,6 +264,8 @@ sap.ui.define([
 						break;
 					}
 					case oBundle.getText("filterTitle"): {
+						UInput.push(this.byId("multiInput"), this.byId("multiInputVertex"), this.byId("multiInputVertex2"), this.byId("multiInputNode"));
+						modelPath.push("/filters/edgeType", "/filters/sourceNodeType", "/filters/targetNodeType", "/filters/nodes");
 						break;
 					}
 				}
@@ -285,6 +290,61 @@ sap.ui.define([
 
 			_setFilterFromModel: function () {
 				//Set filter object from Model
+				var viewFilter = {
+					filters: {
+						sourceNodeType: [],
+						targetNodeType: [],
+						edgeType: [],
+						nodes: []
+					},
+					nearestNeighborhood: [],
+					legends: {
+						location: '',
+						organization: '',
+						person: '',
+						time: ''
+					},
+					shortestDistance: {
+						sourceVertex: '',
+						targetVertex: ''
+					},
+				};
+				const recursiveFill = (viewFilter, viewPath) => {
+
+					if (typeof (viewFilter) == "string") {
+						if (viewPath.slice(0, -1).includes("shortestDistance")) {
+							var nodeKey = this.getModel("graph").getProperty("/nodes").find((node) => {
+								var nodes = this.getModel("view").getProperty(viewPath.slice(0, -1));
+								if (nodes && nodes.length > 0) {
+									return node.title == nodes[0].getText()
+								}
+							});
+							return nodeKey ? nodeKey.key : '';
+						} else {
+							return this.getModel("view").getProperty(viewPath.slice(0, -1));
+						}
+					} else if (Array.isArray(viewFilter)) {
+						var filterArr = this.getModel("view").getProperty(viewPath.slice(0, -1)).map((token) => {
+							var nodeObj = this.getModel("graph").getProperty("/nodes").find((element) => { return element.title == token.getText() });
+							if (nodeObj) {
+								return nodeObj.key
+							} else {
+								return;
+							}
+						});
+						return filterArr;
+					} else {
+						for (var i in viewFilter) {
+							if (viewFilter.hasOwnProperty(i)) {
+								var levelViewPath = viewPath + i;
+								viewFilter[i] = recursiveFill(viewFilter[i], levelViewPath + "/");
+							}
+						}
+						return viewFilter;
+					}
+				}
+				viewFilter = recursiveFill(viewFilter, "/");
+				return viewFilter;
 			},
 
 			_closeDialogBox: function (event) {
@@ -292,9 +352,8 @@ sap.ui.define([
 				var filter = {};
 				this._setViewModel(event);
 				//Populate filter from model
+				filter = this._setFilterFromModel();
 				//Trigger event accordingly sending filter
-				//Nearest Neighborhood
-				//Fire event for graph listener.
 				if (filter) {
 					var EventBus = sap.ui.getCore().getEventBus();
 					EventBus.publish("FilterChannel", "DialogClose", filter);
@@ -357,6 +416,8 @@ sap.ui.define([
 				var modelPath = [];
 				switch (key) {
 					case 'filters':
+						UInput.push(this.byId("multiInput"), this.byId("multiInputVertex"), this.byId("multiInputVertex2"), this.byId("multiInputNode"));
+						modelPath.push("/filters/edgeType", "/filters/sourceNodeType", "/filters/targetNodeType", "/filters/nodes");
 						break;
 					case 'shortestDistance':
 						UInput.push(this.byId("multiInputSource"), this.byId("multiInputTarget"));

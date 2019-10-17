@@ -30,7 +30,7 @@
         <InputListItem label="Node" class="sapUiTinyMargin myCustomText">
             <MultiInput width="200px" id="multiInputNode" class="sapUiTinyMargin sapUiContentPadding" suggestionItems="{
 				path: 'graph>/nodes',
-				sorter: { path: 'graph>title' }
+				sorter: { path: 'title' }
 			}" valueHelpRequest="handleValueHelp">
                 <core:Item key="{graph>key}" text="{graph>title}" />
             </MultiInput>
