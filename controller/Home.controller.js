@@ -62,8 +62,33 @@ sap.ui.define([
 		},
 
 		_filterLegends: function (localModel, filter) {
-			if (filter.length > 0) {
-
+			if (Object.entries(filter).length !== 0 && filter.constructor === Object) {
+				//If value set then update status color else, set default
+				var statuses = this.oGraph.getStatuses();
+				statuses.forEach((status) => {
+					switch (status.getTitle()) {
+						case "Location": {
+							status.setBackgroundColor(filter.location ? filter.location : "#525DF4");
+							status.setBorderColor(filter.location ? filter.location : "#525DF4");
+							break;
+						}
+						case "Person": {
+							status.setBackgroundColor(filter.person ? filter.person : "#E8743B");
+							status.setBorderColor(filter.person ? filter.person : "#E8743B");
+							break;
+						}
+						case "Organization": {
+							status.setBackgroundColor(filter.organization ? filter.organization : "#13A4B4");
+							status.setBorderColor(filter.organization ? filter.organization : "#13A4B4");
+							break;
+						}
+						case "Time": {
+							status.setBackgroundColor(filter.time ? filter.time : "#19A979");
+							status.setBorderColor(filter.time ? filter.time : "#19A979");
+							break;
+						}
+					}
+				})
 			}
 			return localModel;
 		},
@@ -74,8 +99,8 @@ sap.ui.define([
 			//Copy parent model to local model
 			//Apply filters to local Model.
 			localModel = this._filterNearestNeighborhood(localModel, sData.nearestNeighborhood);
+			localModel = this._filterLegends(localModel, sData.legends);
 			//Set View Model with local Model
-			debugger;
 			this.byId("graph").getModel().setProperty("/nodes", localModel.nodes);
 			this.byId("graph").getModel().setProperty("/lines", localModel.lines);
 			this.byId("graph").getModel().setProperty("/groups", localModel.groups);
