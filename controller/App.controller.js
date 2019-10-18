@@ -529,10 +529,10 @@ sap.ui.define([
 			handleChange: function (oEvent) {
 				var oView = this.getView(),
 					oInput = oView.byId(this.inputId);
-				oInput.setValue(oEvent.getParameter("colorString"));
+				oInput.setValue(oEvent.getParameter("hex"));
 				oInput.setValueState("None");
 				this.inputId = "";
-				MessageToast.show("Chosen color string: " + oEvent.getParameter("colorString"));
+				MessageToast.show("Chosen color string: " + oEvent.getParameter("hex"));
 			},
 
 			handleInputChange: function (oEvent) {
