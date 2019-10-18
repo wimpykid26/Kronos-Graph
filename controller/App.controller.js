@@ -351,7 +351,6 @@ sap.ui.define([
 						return viewFilter;
 					}
 				}
-				debugger;
 				viewFilter = recursiveFill(viewFilter, "/");
 				return viewFilter;
 			},

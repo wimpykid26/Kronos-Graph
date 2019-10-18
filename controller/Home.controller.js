@@ -60,6 +60,51 @@ sap.ui.define([
 			return localModel;
 		},
 
+		_filterMain: function (localModel, filter) {
+			debugger
+			if (Object.entries(filter).length !== 0 && filter.constructor === Object) {
+				//Check and remove edges
+				var unfilteredArrLines = localModel.lines;
+				var unfilteredArrNodes = localModel.nodes;
+				var filteredArrLines = [];
+				var filteredArrNodes = []
+				if (filter.edgeType && filter.edgeType.length > 0) {
+					//Get all edges from parent model
+					var EdgeModel = this.getOwnerComponent().getModel("edges");
+					//Populate source and target statuses
+					var lines = [];
+					filter.edgeType.forEach((edge) => {
+						var edgeDesc = EdgeModel.getProperty("/EdgeCollection").find(element => { return element.ProductId == edge }).Name.split(" ");
+						//Since graph is undirected, source and target doesnt matter
+						lines.push({
+							from: edgeDesc[0],
+							to: edgeDesc[edgeDesc.length - 1]
+						})
+					});
+					//Populate new structure with source and target types for all lines
+					unfilteredArrLines.forEach((line) => {
+						var fromNode = unfilteredArrNodes.find(node => { return node.key == line.from });
+						var toNode = unfilteredArrNodes.find(node => { return node.key == line.to });
+						var found = lines.find(lineEdge => {
+							return (fromNode.status == lineEdge.from || toNode.status == lineEdge.from) &&
+								(toNode.status == lineEdge.to || fromNode.status == lineEdge.to)
+						});
+						if (found) {
+							filteredArrNodes.push(fromNode);
+							filteredArrNodes.push(toNode);
+							filteredArrLines.push({ "from": line.from, "to": line.to });
+						}
+					})
+					//remove duplicates which might have
+					filteredArrNodes = Array.from(new Set(filteredArrNodes));
+					localModel.lines = filteredArrLines;
+					localModel.nodes = filteredArrNodes;
+				}
+				//Check and remove source nodes
+				//Check and remove target nodes
+			}
+			return localModel;
+		},
 		_filterLegends: function (localModel, filter) {
 			if (Object.entries(filter).length !== 0 && filter.constructor === Object) {
 				//If value set then update status color else, set default
@@ -93,13 +138,13 @@ sap.ui.define([
 		},
 
 		_handleFilterEvent: function (sChanel, sEvent, sData) {
-			debugger;
 			//Get all nodes from parent model.
 			var localModel = jQuery.sap.extend(true, {}, this.parentModel.oData);
 			//Copy parent model to local model
 			//Apply filters to local Model.
 			localModel = this._filterNearestNeighborhood(localModel, sData.nearestNeighborhood);
 			localModel = this._filterLegends(localModel, sData.legends);
+			localModel = this._filterMain(localModel, sData.filters)
 			//Set View Model with local Model
 			this.byId("graph").getModel().setProperty("/nodes", localModel.nodes);
 			this.byId("graph").getModel().setProperty("/lines", localModel.lines);
