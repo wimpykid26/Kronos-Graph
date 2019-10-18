@@ -92,7 +92,7 @@ sap.ui.define([
 						targetVertex: ''
 					},
 				})
-				this.getView().setModel(dataModel, "filters");
+				this.getView().setModel(dataModel);
 				this.getView().setModel(viewModel, "view");
 				this.getView().setModel(graphModel, "graph");
 				this.getView().addStyleClass(this.getOwnerComponent().getContentDensityClass());
@@ -183,9 +183,10 @@ sap.ui.define([
 			},
 
 			_openValueHelpDialog: function (sInputValue) {
+				debugger;
 				// create a filter for the binding
 				var filter = '';
-				if (this._valueHelpDialog.getTitle() == 'Node' || 'Source Node' || 'Target Node') {
+				if (this._valueHelpDialog.getTitle() == 'Node' || this._valueHelpDialog.getTitle() == 'Source Node' || this._valueHelpDialog.getTitle() == 'Target Node') {
 					filter = 'title';
 				} else {
 					filter = 'Name';
@@ -203,7 +204,7 @@ sap.ui.define([
 			_handleValueHelpSearch: function (evt) {
 				var sValue = evt.getParameter("value");
 				var filter = '';
-				if (this._valueHelpDialog.getTitle() == 'Node' || 'Source Node' || 'Target Node') {
+				if (this._valueHelpDialog.getTitle() == 'Node' || this._valueHelpDialog.getTitle() == 'Source Node' || this._valueHelpDialog.getTitle() == 'Target Node') {
 					filter = 'title';
 				} else {
 					filter = 'Name'
