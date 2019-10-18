@@ -66,9 +66,11 @@ sap.ui.define([
 				//Check and remove edges
 				var unfilteredArrLines = localModel.lines;
 				var unfilteredArrNodes = localModel.nodes;
-				var filteredArrLines = [];
-				var filteredArrNodes = []
+				var filteredArrNodes = unfilteredArrNodes.slice();
+				var filteredArrLines = unfilteredArrLines.slice();
 				if (filter.edgeType && filter.edgeType.length > 0) {
+					var filteredArrLines = [];
+					var filteredArrNodes = [];
 					//Get all edges from parent model
 					var EdgeModel = this.getOwnerComponent().getModel("edges");
 					//Populate source and target statuses
@@ -90,18 +92,29 @@ sap.ui.define([
 								(toNode.status == lineEdge.to || fromNode.status == lineEdge.to)
 						});
 						if (found) {
-							filteredArrNodes.push(fromNode);
-							filteredArrNodes.push(toNode);
-							filteredArrLines.push({ "from": line.from, "to": line.to });
+							filteredArrNodesEdge.push(fromNode);
+							filteredArrNodesEdge.push(toNode);
+							filteredArrLinesEdge.push({ "from": line.from, "to": line.to });
 						}
 					})
 					//remove duplicates which might have
-					filteredArrNodes = Array.from(new Set(filteredArrNodes));
-					localModel.lines = filteredArrLines;
-					localModel.nodes = filteredArrNodes;
+					filteredArrNodesEdge = Array.from(new Set(filteredArrNodes));
+				}
+				if (filter.sourceNodeType && filter.sourceNodeType.length > 0) {
+					filteredArrLines = filteredArrLines.filter((line) => {
+						var sourceNode = filteredArrNodes.find((node) => { return node.key == line.from });
+						return filter.sourceNodeType.find(sourceType => { return sourceNode.status == sourceType });
+					})
+					filteredArrNodes = filteredArrNodes.filter((node) => {
+						return filteredArrLines.some((line) =>
+							line.from == node.key || line.to == node.key)
+					});
 				}
 				//Check and remove source nodes
-				//Check and remove target nodes
+				//Check and remove target nodes	
+				localModel.lines = filteredArrLines;
+				localModel.nodes = filteredArrNodes;
+
 			}
 			return localModel;
 		},

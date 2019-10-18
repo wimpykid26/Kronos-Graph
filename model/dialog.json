@@ -39,25 +39,25 @@
     ],
     "VertexType": [
         {
-            "ProductId": "Vertex-0001",
+            "ProductId": "Person",
             "Category": "Vertex",
             "Description": "Person",
             "Name": "Person Entity Type"
         },
         {
-            "ProductId": "Vertex-0002",
+            "ProductId": "Time",
             "Category": "Vertex",
             "Description": "Time",
             "Name": "Time Entity Type"
         },
         {
-            "ProductId": "Vertex-0003",
+            "ProductId": "Location",
             "Category": "Vertex",
             "Description": "Location",
             "Name": "Location Entity Type"
         },
         {
-            "ProductId": "Vertex-0004",
+            "ProductId": "Organization",
             "Category": "Vertex",
             "Description": "Organization",
             "Name": "Organization Entity Type"
