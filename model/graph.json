@@ -476,27 +476,27 @@
     ],
     "statuses": [
         {
-            "key": 1,
-            "borderColor": "#5899DA",
-            "backgroundColor": "#5899DA",
+            "key": "Location",
+            "borderColor": "#525DF4",
+            "backgroundColor": "#525DF4",
             "title": "Location"
         },
         {
-            "key": 2,
-            "borderColor": "#F0F8FF",
-            "backgroundColor": "#F0F8FF",
+            "key": "Person",
+            "borderColor": "#E8743B",
+            "backgroundColor": "#E8743B",
             "title": "Person"
         },
         {
-            "key": 3,
-            "borderColor": "#F0F8FF",
-            "backgroundColor": "#F0F8FF",
+            "key": "Organization",
+            "borderColor": "#13A4B4",
+            "backgroundColor": "#13A4B4",
             "title": "Organization"
         },
         {
-            "key": 4,
-            "borderColor": "#F0F8FF",
-            "backgroundColor": "#F0F8FF",
+            "key": "Time",
+            "borderColor": "#19A979",
+            "backgroundColor": "#19A979",
             "title": "Time"
         }
     ]
