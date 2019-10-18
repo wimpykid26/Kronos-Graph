@@ -183,7 +183,6 @@ sap.ui.define([
 			},
 
 			_openValueHelpDialog: function (sInputValue) {
-				debugger;
 				// create a filter for the binding
 				var filter = '';
 				if (this._valueHelpDialog.getTitle() == 'Node' || this._valueHelpDialog.getTitle() == 'Source Node' || this._valueHelpDialog.getTitle() == 'Target Node') {
@@ -326,11 +325,19 @@ sap.ui.define([
 						}
 					} else if (Array.isArray(viewFilter)) {
 						var filterArr = this.getModel("view").getProperty(viewPath.slice(0, -1)).map((token) => {
-							var nodeObj = this.getModel("graph").getProperty("/nodes").find((element) => { return element.title == token.getText() });
-							if (nodeObj) {
-								return nodeObj.key
+							var nodeObj = [];
+							if (viewPath.slice(0, -1) == "/filters/edgeType" || viewPath.slice(0, -1) == "/filters/sourceNodeType" || viewPath.slice(0, -1) == "/filters/targetNodeType") {
+								//Edge or vertex types
+								if (viewPath.slice(0, -1) == "/filters/edgeType") {
+									nodeObj = this.getModel().getProperty("/EdgeCollection").find((element) => { return element.Name == token.getText() });
+								} else {
+									nodeObj = this.getModel().getProperty("/VertexType").find((element) => { return element.Name == token.getText() });
+								}
+								return nodeObj ? nodeObj.ProductId : '';
 							} else {
-								return;
+								//nodes
+								nodeObj = this.getModel("graph").getProperty("/nodes").find((element) => { return element.title == token.getText() });
+								return nodeObj ? nodeObj.key : '';
 							}
 						});
 						return filterArr;
@@ -344,6 +351,7 @@ sap.ui.define([
 						return viewFilter;
 					}
 				}
+				debugger;
 				viewFilter = recursiveFill(viewFilter, "/");
 				return viewFilter;
 			},

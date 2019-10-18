@@ -45,7 +45,6 @@ sap.ui.define([
 			//Remove duplicates from filter.
 			if (filter.length > 0) {
 				filter = Array.from(new Set(filter));
-				debugger;
 				var unfilteredArrLines = localModel.lines;
 				//Use any line going to or from the set of nearest neighborhood filter nodes.
 				var filteredArrLines = unfilteredArrLines.filter((line) => { return filter.includes(line.from) || filter.includes(line.to) });
@@ -94,6 +93,7 @@ sap.ui.define([
 		},
 
 		_handleFilterEvent: function (sChanel, sEvent, sData) {
+			debugger;
 			//Get all nodes from parent model.
 			var localModel = jQuery.sap.extend(true, {}, this.parentModel.oData);
 			//Copy parent model to local model
