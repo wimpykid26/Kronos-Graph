@@ -3,8 +3,9 @@ sap.ui.define([
 	'sap/ui/model/json/JSONModel',
 	'sap/ui/Device',
 	'kronos/ui/graphapp/model/formatter',
-	"sap/ui/model/BindingMode"
-], function (BaseController, JSONModel, Device, formatter, BindingMode) {
+	"sap/ui/model/BindingMode",
+	"sap/suite/ui/commons/networkgraph/Status"
+], function (BaseController, JSONModel, Device, formatter, BindingMode, Status) {
 	"use strict";
 	return BaseController.extend("kronos.ui.graphapp.controller.Home", {
 		formatter: formatter,
@@ -25,6 +26,18 @@ sap.ui.define([
 			});
 			this.getView().setModel(this.oModelSettings, "settings");
 			this.oGraph = this.byId("graph");
+			//Bind statuses to graph;
+			var oStatusTemplate = new Status({
+				key: "{key}",
+				title: "{title}",
+				borderColor: "{borderColor}",
+				backgroundColor: "{backgroundColor}"
+			})
+			this.oGraph.bindAggregation("statuses", {
+				path: "/statuses",
+				template: oStatusTemplate,
+				templateShareable: false
+			});
 			this.oGraph._fZoomLevel = 0.75;
 		},
 
@@ -48,13 +61,21 @@ sap.ui.define([
 			return localModel;
 		},
 
+		_filterLegends: function (localModel, filter) {
+			if (filter.length > 0) {
+
+			}
+			return localModel;
+		},
+
 		_handleFilterEvent: function (sChanel, sEvent, sData) {
 			//Get all nodes from parent model.
+			var localModel = jQuery.sap.extend(true, {}, this.parentModel.oData);
 			//Copy parent model to local model
 			//Apply filters to local Model.
-			debugger;
-			var localModel = jQuery.sap.extend(true, {}, this.parentModel.oData);
 			localModel = this._filterNearestNeighborhood(localModel, sData.nearestNeighborhood);
+			//Set View Model with local Model
+			debugger;
 			this.byId("graph").getModel().setProperty("/nodes", localModel.nodes);
 			this.byId("graph").getModel().setProperty("/lines", localModel.lines);
 			this.byId("graph").getModel().setProperty("/groups", localModel.groups);
