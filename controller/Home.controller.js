@@ -237,6 +237,9 @@ sap.ui.define([
 			//Copy parent model to local model
 			//Apply filters to local Model.
 			var isLink = false;
+			//Set highlight to false for all nodes and lines
+			this.oGraph.getLines().forEach(line => line.setSelected(false));
+			this.oGraph.getNodes().forEach(node => node.setSelected(false));
 			localModel = this._filterNearestNeighborhood(localModel, sData.nearestNeighborhood);
 			localModel = this._filterLegends(localModel, sData.legends);
 			localModel = this._filterMain(localModel, sData.filters);
