@@ -61,7 +61,6 @@ sap.ui.define([
 		},
 
 		_filterMain: function (localModel, filter) {
-			debugger
 			if (Object.entries(filter).length !== 0 && filter.constructor === Object) {
 				//Check and remove edges
 				var unfilteredArrLines = localModel.lines;
@@ -162,21 +161,22 @@ sap.ui.define([
 
 		_filterShortestDistance: function (localModel, filter) {
 			debugger;
-			if (filter && filter.length > 0) {
+			if (Object.entries(filter).length !== 0 && filter.constructor === Object) {
 				const findShortestDistance = (source, destination) => {
 					//Populate current graph into list.
 					var graph = [[]];
+					var nodes = this.oGraph.getNodes().map(node => { return parseInt(node.getKey()) });
 					//Get max size of graph
-					var noNodes = Math.max(this.oGraph.getNodes.map(node => node.key));
-					for (i = 0; i < noNodes; i++) {
+					for (var i = 0; i < nodes.length; i++) {
 						graph[i] = [];
 					}
 					//Get edges
 					var lines = this.oGraph.getLines();
 					//Populate adjacency list
-					lines.forEach((line) => graph[line.from].push(line.to));
+					lines.forEach((line) => graph[parseInt(line.getFrom())].push(parseInt(line.getTo())));
 					debugger;
 				}
+				findShortestDistance();
 			}
 			return localModel;
 		},
