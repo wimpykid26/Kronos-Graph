@@ -164,19 +164,69 @@ sap.ui.define([
 			if (Object.entries(filter).length !== 0 && filter.constructor === Object) {
 				const findShortestDistance = (source, destination) => {
 					//Populate current graph into list.
+					var queue = [] //Queue to maintain DFS.
+					source = parseInt(source);
+					const targetNode = parseInt(destination);
 					var graph = [[]];
 					var nodes = this.oGraph.getNodes().map(node => { return parseInt(node.getKey()) });
+					var visited = [];
+					var pred = []; //Array to store predeccesors
+					var dist = []; //Store min dist to successors
 					//Get max size of graph
 					for (var i = 0; i < nodes.length; i++) {
 						graph[i] = [];
+						visited.push(false);
+						pred.push(-1);
+						dist.push(Number.MAX_SAFE_INTEGER);
 					}
 					//Get edges
 					var lines = this.oGraph.getLines();
 					//Populate adjacency list
 					lines.forEach((line) => graph[parseInt(line.getFrom())].push(parseInt(line.getTo())));
+					//source to be visited first. Distance to be set to 0
 					debugger;
+					visited[source] = true;
+					dist[source] = 0;
+					queue.push(source);
+					while (queue.length > 0) {
+						var currentSource = queue.shift();
+						for (var target = 0; target < graph[currentSource].length; target++) {
+							if (visited[graph[currentSource][target]] == false) {
+								visited[graph[currentSource][target]] = true;
+								dist[graph[currentSource][target]] = dist[currentSource] + 1;
+								pred[graph[currentSource][target]] = currentSource;
+								queue.push(graph[currentSource][target]);
+								if (graph[currentSource][target] == targetNode) {
+									return { isLink: true, dist: dist, pred: pred };
+								}
+							}
+						}
+					}
+					return { isLink: false, dist: [], pred: [] };
 				}
-				findShortestDistance();
+				const { isLink, dist, pred } = findShortestDistance(filter.sourceVertex, filter.targetVertex);
+				var path = [];
+				if (!isLink) { //No link between source and destination
+					return localModel, false
+				} else {
+					//Get predeccessors 
+					var dest = parseInt(filter.targetVertex);
+					path.push(dest);
+					while (pred[dest] != -1) {
+						path.push(pred[dest]);
+						dest = pred[dest];
+					}
+					//Set lines in path to be true
+					var lines = this.oGraph.getLines();
+					var nodes = this.oGraph.getNodes();
+					for (var rev = path.length - 1; rev >= 1; rev--) {
+						var highlightNode = nodes.find((node) => { return parseInt(node.getKey()) == path[rev] });
+						highlightNode.setSelected(true);
+						var edge = lines.find((line) => { return path[rev] == parseInt(line.getFrom()) && path[rev - 1] == parseInt(line.getTo()) });
+						edge.setSelected(true);
+					}
+					return localModel, true;
+				}
 			}
 			return localModel;
 		},
@@ -186,10 +236,11 @@ sap.ui.define([
 			var localModel = jQuery.sap.extend(true, {}, this.parentModel.oData);
 			//Copy parent model to local model
 			//Apply filters to local Model.
+			var isLink = false;
 			localModel = this._filterNearestNeighborhood(localModel, sData.nearestNeighborhood);
 			localModel = this._filterLegends(localModel, sData.legends);
 			localModel = this._filterMain(localModel, sData.filters);
-			localModel = this._filterShortestDistance(localModel, sData.shortestDistance);
+			localModel, isLink = this._filterShortestDistance(localModel, sData.shortestDistance);
 			//Set View Model with local Model
 			this.byId("graph").getModel().setProperty("/nodes", localModel.nodes);
 			this.byId("graph").getModel().setProperty("/lines", localModel.lines);
