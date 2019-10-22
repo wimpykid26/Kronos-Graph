@@ -92,14 +92,15 @@ sap.ui.define([
 								(toNode.status == lineEdge.to || fromNode.status == lineEdge.to)
 						});
 						if (found) {
-							filteredArrNodesEdge.push(fromNode);
-							filteredArrNodesEdge.push(toNode);
-							filteredArrLinesEdge.push({ "from": line.from, "to": line.to });
+							filteredArrNodes.push(fromNode);
+							filteredArrNodes.push(toNode);
+							filteredArrLines.push({ "from": line.from, "to": line.to });
 						}
 					})
 					//remove duplicates which might have
-					filteredArrNodesEdge = Array.from(new Set(filteredArrNodes));
+					filteredArrNodes = Array.from(new Set(filteredArrNodes));
 				}
+				//Check and remove source nodes
 				if (filter.sourceNodeType && filter.sourceNodeType.length > 0) {
 					filteredArrLines = filteredArrLines.filter((line) => {
 						var sourceNode = filteredArrNodes.find((node) => { return node.key == line.from });
@@ -110,8 +111,17 @@ sap.ui.define([
 							line.from == node.key || line.to == node.key)
 					});
 				}
-				//Check and remove source nodes
 				//Check and remove target nodes	
+				if (filter.targetNodeType && filter.targetNodeType.length > 0) {
+					filteredArrLines = filteredArrLines.filter((line) => {
+						var targetNode = filteredArrNodes.find((node) => { return node.key == line.to });
+						return filter.targetNodeType.find(targetType => { return targetNode.status == targetType });
+					})
+					filteredArrNodes = filteredArrNodes.filter((node) => {
+						return filteredArrLines.some((line) =>
+							line.from == node.key || line.to == node.key)
+					});
+				}
 				localModel.lines = filteredArrLines;
 				localModel.nodes = filteredArrNodes;
 
@@ -150,6 +160,27 @@ sap.ui.define([
 			return localModel;
 		},
 
+		_filterShortestDistance: function (localModel, filter) {
+			debugger;
+			if (filter && filter.length > 0) {
+				const findShortestDistance = (source, destination) => {
+					//Populate current graph into list.
+					var graph = [[]];
+					//Get max size of graph
+					var noNodes = Math.max(this.oGraph.getNodes.map(node => node.key));
+					for (i = 0; i < noNodes; i++) {
+						graph[i] = [];
+					}
+					//Get edges
+					var lines = this.oGraph.getLines();
+					//Populate adjacency list
+					lines.forEach((line) => graph[line.from].push(line.to));
+					debugger;
+				}
+			}
+			return localModel;
+		},
+
 		_handleFilterEvent: function (sChanel, sEvent, sData) {
 			//Get all nodes from parent model.
 			var localModel = jQuery.sap.extend(true, {}, this.parentModel.oData);
@@ -157,7 +188,8 @@ sap.ui.define([
 			//Apply filters to local Model.
 			localModel = this._filterNearestNeighborhood(localModel, sData.nearestNeighborhood);
 			localModel = this._filterLegends(localModel, sData.legends);
-			localModel = this._filterMain(localModel, sData.filters)
+			localModel = this._filterMain(localModel, sData.filters);
+			localModel = this._filterShortestDistance(localModel, sData.shortestDistance);
 			//Set View Model with local Model
 			this.byId("graph").getModel().setProperty("/nodes", localModel.nodes);
 			this.byId("graph").getModel().setProperty("/lines", localModel.lines);
