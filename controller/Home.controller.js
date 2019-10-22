@@ -225,6 +225,8 @@ sap.ui.define([
 						var edge = lines.find((line) => { return path[rev] == parseInt(line.getFrom()) && path[rev - 1] == parseInt(line.getTo()) });
 						edge.setSelected(true);
 					}
+					//Set target to be highlighted
+					nodes.find((node) => { return parseInt(node.getKey()) == path[rev] }).setSelected(true);
 					return localModel, true;
 				}
 			}
