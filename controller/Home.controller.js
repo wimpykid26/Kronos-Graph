@@ -4,8 +4,14 @@ sap.ui.define([
 	'sap/ui/Device',
 	'kronos/ui/graphapp/model/formatter',
 	"sap/ui/model/BindingMode",
-	"sap/suite/ui/commons/networkgraph/Status"
-], function (BaseController, JSONModel, Device, formatter, BindingMode, Status) {
+	"sap/suite/ui/commons/networkgraph/Status",
+	'sap/m/ResponsivePopover',
+	'sap/m/TileContent',
+	'sap/m/NewsContent',
+	'sap/m/Button',
+	'sap/m/library',
+	'sap/ui/core/syncStyleClass',
+], function (BaseController, JSONModel, Device, formatter, BindingMode, Status, ResponsivePopover, TileContent, NewsContent, Button, mobileLibrary, syncStyleClass) {
 	"use strict";
 	return BaseController.extend("kronos.ui.graphapp.controller.Home", {
 		formatter: formatter,
@@ -39,6 +45,39 @@ sap.ui.define([
 				templateShareable: false
 			});
 			this.oGraph._fZoomLevel = 0.75;
+		},
+
+		linePress: function (oEvent) {
+			debugger;
+			// shortcut for sap.m.PlacementType
+			var PlacementType = mobileLibrary.PlacementType;
+			var oButton = new Button({
+				text: 'Close',
+				press: function () {
+					this._oPopoverForLine.close();
+				}.bind(this)
+			});
+			if (!this._oPopoverForLine) {
+				this._oPopoverForLine = new ResponsivePopover({
+					title: 'News Item',
+					endButton: oButton,
+					modal: true,
+					contentWidth: "500px",
+					placement: PlacementType.Horizontal,
+					content: new TileContent({
+						footer: 'August 21, 2013',
+						content: new NewsContent({
+							contentText: 'uisfudsfb'
+						})
+					}),
+					afterClose: function (evt) {
+						this._oPopoverForLine.destroy();
+					}.bind(this)
+				})
+			}
+			this.byId("graph").addDependent(this._oPopoverForLine);
+			syncStyleClass(this.getView().getController().getOwnerComponent().getContentDensityClass(), this.getView(), this._oPopoverForLine);
+			this._oPopoverForLine.openBy(oEvent.getSource());
 		},
 
 		_filterNearestNeighborhood: function (localModel, filter) {

@@ -28,7 +28,7 @@
 						</Node>
 					</nodes>
 					<lines>
-						<Line from="{from}" to="{to}" status="{status}">
+						<Line from="{from}" to="{to}" status="{status}" press="linePress">
 						</Line>
 					</lines>
 					<groups>
