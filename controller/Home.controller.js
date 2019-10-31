@@ -58,8 +58,10 @@ sap.ui.define([
 				}.bind(this)
 			});
 			if (!this._oPopoverForLine) {
+				var fromNodeTitle = oEvent.getSource().getFromNode().getTitle();
+				var toNodeTitle = oEvent.getSource().getToNode().getTitle();
 				this._oPopoverForLine = new ResponsivePopover({
-					title: 'News Item',
+					title: `${fromNodeTitle} -> ${toNodeTitle}`,
 					endButton: oButton,
 					modal: true,
 					placement: PlacementType.Horizontal,
