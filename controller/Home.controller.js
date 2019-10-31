@@ -62,7 +62,6 @@ sap.ui.define([
 					title: 'News Item',
 					endButton: oButton,
 					modal: true,
-					contentWidth: "500px",
 					placement: PlacementType.Horizontal,
 					content: new TileContent({
 						footer: 'August 21, 2013',
@@ -71,10 +70,11 @@ sap.ui.define([
 						})
 					}),
 					afterClose: function (evt) {
-						this._oPopoverForLine.destroy();
+						//TODO
 					}.bind(this)
 				})
 			}
+			oEvent.preventDefault();
 			this.byId("graph").addDependent(this._oPopoverForLine);
 			syncStyleClass(this.getView().getController().getOwnerComponent().getContentDensityClass(), this.getView(), this._oPopoverForLine);
 			this._oPopoverForLine.openBy(oEvent.getSource());
