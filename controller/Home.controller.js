@@ -19,7 +19,8 @@ sap.ui.define([
 		onInit: function () {
 			var EventBus = sap.ui.getCore().getEventBus();
 			var graphModel = {};
-			EventBus.subscribe("FilterChannel", "DialogClose", this._handleFilterEvent, this)
+			EventBus.subscribe("FilterChannel", "DialogClose", this._handleFilterEvent, this);
+			this.getView().setModel(new JSONModel("/graph/webapp/model/data.json"), "graph");
 			graphModel = this.getOwnerComponent().getModel("graph");
 			this.parentModel = jQuery.sap.extend(true, {}, graphModel);
 			graphModel.setSizeLimit(Number.MAX_SAFE_INTEGER);
@@ -66,9 +67,9 @@ sap.ui.define([
 					modal: true,
 					placement: PlacementType.Horizontal,
 					content: new TileContent({
-						footer: 'August 21, 2013',
+						footer: 'August 21, 2013', //TODO Binding
 						content: new NewsContent({
-							contentText: 'uisfudsfb'
+							contentText: 'uisfudsfb' //TODO Binding
 						})
 					}),
 					afterClose: function (evt) {
