@@ -20,11 +20,14 @@ sap.ui.define([
 			var EventBus = sap.ui.getCore().getEventBus();
 			var graphModel = {};
 			EventBus.subscribe("FilterChannel", "DialogClose", this._handleFilterEvent, this);
-			this.getView().setModel(new JSONModel("/graph/webapp/model/data.json"), "graph");
-			graphModel = this.getOwnerComponent().getModel("graph");
-			this.parentModel = jQuery.sap.extend(true, {}, graphModel);
-			graphModel.setSizeLimit(Number.MAX_SAFE_INTEGER);
-			this.setModel(graphModel);
+			if (Object.entries(graphModel).length === 0) {
+				this.getView().setModel(new JSONModel("/graph/webapp/model/data.json"), "graph1");
+				graphModel = this.getView().getModel("graph1");
+				this.parentModel = jQuery.sap.extend(true, {}, graphModel);
+				graphModel.setSizeLimit(Number.MAX_SAFE_INTEGER);
+				this.setModel(graphModel);
+				debugger;
+			}
 			this.oModelSettings = new JSONModel({
 				maxIterations: 200,
 				maxTime: 500,
@@ -276,6 +279,7 @@ sap.ui.define([
 		},
 
 		_handleFilterEvent: function (sChanel, sEvent, sData) {
+			debugger;
 			//Get all nodes from parent model.
 			var localModel = jQuery.sap.extend(true, {}, this.parentModel.oData);
 			//Copy parent model to local model
